@@ -19,16 +19,5 @@ std::vector<double> Construct_Matrix(int N, double Lx, double Ly)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 #define _PB_CPP
 #endif
