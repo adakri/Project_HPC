@@ -7,6 +7,8 @@
 #include <vector>
 
 #include "BC.h"
+#include "GradConj.h"
+
 
 class Problem
 {

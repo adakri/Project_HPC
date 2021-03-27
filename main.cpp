@@ -15,12 +15,15 @@ int main(int argc, char** argv)
     double Lx=1.,Ly=1.,D=1.;
     int N=500;
     Problem Pb(BC* BC_functions);
-    
+
 
   
-  // Démarrage du chrono
-  auto start = chrono::high_resolution_clock::now();
+    // Démarrage du chrono
+    auto start = chrono::high_resolution_clock::now();
 
+    //chech the algebra
+    std::vector<double> A(4),b(2);
+    GradConj Gc(A,b);
 
   
   // Fin du chrono

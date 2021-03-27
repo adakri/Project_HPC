@@ -16,7 +16,8 @@ using namespace std;
 
 //constructeur
 GradConj::GradConj(std::vector<double> A ,std::vector<double> b): A_(A), b_(b)
-{	
+{
+	cout<<"Classe GC initié"<<endl;	
 }
 
 //matrix vector and vector vector manipulations
@@ -71,12 +72,12 @@ std::vector<double> GradConj::Solve(double& state)const
 	int j = 0;
 	double beta=GradConj::norm(r);
 	int nb_iterat_=0;
-	while (j<=k_)
+	/* while (j<=k_)
 	{
 
 		//cout<<"________________________loop_____________"<<endl;
 		z=A*p;
-		alpha= (r.dot(r) )  / (z.dot(p)) ;
+		alpha= (GradConj::dot_product(r,r) )  / (GradConj::dot_product(z,p)) ;
 		xSuivant= x + alpha*p;
         rSuivant=r-alpha*z;
 		gamma= (rSuivant.dot(rSuivant))/(r.dot(r));
@@ -92,7 +93,7 @@ std::vector<double> GradConj::Solve(double& state)const
 			{
 				break;
 			}
-	}
+	} */
 	state=beta;
 	cout<<nb_iterat_<<endl;
 

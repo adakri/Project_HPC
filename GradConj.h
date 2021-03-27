@@ -14,10 +14,11 @@ private:
 	
 
 public:
+//not sure about the consts
 	GradConj(std::vector<double> A ,std::vector<double> b) : A_(A), b_(b) { };
 	std::vector<double> product(std::vector<double>,std::vector<double>) const;
 	std::vector<double> dot_product(std::vector<double>,std::vector<double>) const;
-	std::vector<double> GradConj::sum(std::vector<double> ,std::vector<double> y, int sign) const;
+	std::vector<double> sum(std::vector<double> ,std::vector<double> y, int sign) const;
 	double norm(std::vector<double>) const;
 	std::vector<double> Solve(double&)const;
 };
