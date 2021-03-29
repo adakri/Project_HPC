@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-
 #include <math.h>
 #include "Problem.h"
 
@@ -50,6 +49,37 @@ void print_matrix(std::vector<std::vector<double>> A)
 }
 
 
+void print_matrix_verbose(std::vector<std::vector<double>> A)
+{
+  cout<<"version verbose de la matrice creuse"<<endl;
+  std::cout << "-------------------------------------------------" << std::endl;
+  if(A.size()!=3)
+  {
+    cout<<"mauvais format de matrice"<<endl;
+  }else{
+    //retrouvant Nx et Ny
+    int Ny=A[0].size()/(A[0].size()-A[2].size());
+    int Nx=A[0].size()/Ny;
+    //cout<<Nx<<" "<<Ny<<endl;
+    for(int i=0; i<Nx*Ny; i++)
+    {
+      for(int j=0; j<Nx*Ny; j++)
+      {
+        if(i==j)
+        {
+          cout<<A[0][i]<<" ";
+        }else if( (j==i+1) || (j==i-1) ){
+          cout<<A[1][i]<<" ";
+        }else if(j==Nx+i){
+          cout<<A[2][i];
+        }else{
+          cout<<"0 ";
+        }
+      }
+      cout<<endl;
+    }
+  }
+}
 
 
 
@@ -83,11 +113,14 @@ int main(int argc, char** argv)
 
   print_matrix(B);
 
+  print_matrix_verbose(B);
+
   
   // Fin du chrono
   auto finish = chrono::high_resolution_clock::now();
   double t = chrono::duration_cast<chrono::seconds>(finish-start).count();
   // Affichage du résultat
+  std::cout << "-------------------------------------------------" << std::endl;
   cout << "Cela a pris "<< t << " seconds" << endl;
 
   return 0;

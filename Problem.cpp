@@ -46,7 +46,7 @@ std::vector<std::vector<double>> Problem::Construct_Matrix()
 		A[0].push_back(alpha);
 	}
 
-	for(int i=0; i<Nx_*Ny_-2;i++)
+	for(int i=0; i<Nx_*Ny_-1;i++)
 	{
 		if(i%Nx_==0)
 		{

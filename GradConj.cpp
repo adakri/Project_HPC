@@ -21,10 +21,22 @@ GradConj::GradConj(std::vector<double> A ,std::vector<double> b): A_(A), b_(b)
 }
 
 //matrix vector and vector vector manipulations
-std::vector<double> GradConj::product(std::vector<double> A,std::vector<double> x) const
+std::vector<double> GradConj::product(std::vector<std::vector<double>> A,std::vector<double> x, int Nx, int Ny) const
 {
-//à specifier selon le format de la matrice
-
+	//ajouter la partie sim (seulement riangle sup * vect)
+	std::vector<double> y;
+	for(int i=0; i<Nx*Ny; i++)
+	{
+		if(i>Nx*(Ny-1))
+		{
+			y.push_back(A[0][i]*x[(i%Nx)* Nx + i]+A[1][i]*x[(i%Nx)* Nx + i + 1 ]);
+		}else if(i==Nx*Ny-1)
+		{
+			y.push_back(A[0][i]*x[(i%Nx) * Nx + i]);
+		}else{
+			y.push_back(A[0][i]*x[(i%Nx)* Nx + i]+A[1][i]*x[(i%Nx)* Nx + i + 1 ]+A[2][i]*x[(i%Nx)* (Nx+1) + i]);
+		}
+	}
 }
 
 std::vector<double> GradConj::sum(std::vector<double> x,std::vector<double> y, int sign) const
@@ -91,7 +103,7 @@ std::vector<double> GradConj::Solve(double& state)const
 	std::vector<double> r(n),b(b_),p(n),temp(n);
 	//cout<<b<<endl;
 
-	temp=GradConj::product(A,x);
+	//temp=GradConj::product(A,x);
 	r=GradConj::sum(b,temp,-1);
 	p= r  ;	// calcul du residu
 	double alpha;
