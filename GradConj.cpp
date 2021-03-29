@@ -1,6 +1,6 @@
 #ifndef _GC_CPP
 
-
+#include <stdlib.h>
 #include "GradConj.h"
 #include <iostream>
 #include <math.h>
@@ -23,24 +23,54 @@ GradConj::GradConj(std::vector<double> A ,std::vector<double> b): A_(A), b_(b)
 //matrix vector and vector vector manipulations
 std::vector<double> GradConj::product(std::vector<double> A,std::vector<double> x) const
 {
-
+//à specifier selon le format de la matrice
 
 }
 
 std::vector<double> GradConj::sum(std::vector<double> x,std::vector<double> y, int sign) const
 {
-
+	int n=x.size();
+	int m=y.size();
+	if(m!=n)
+	{
+		exit(0);
+	}else{
+		std::vector<double> z(n);
+		for(int i=0; i<n; i++)
+		{
+			z.push_back(x[i]+sign*y[i]);
+		}
+		return z;
+	}	
 
 }
 
 double GradConj::norm(std::vector<double> x) const
 {
-
+		int n=x.size();
+		double sum=0.;
+		for(int i=0; i<n; i++)
+		{
+			sum+=x[i]*x[i];
+		}
+		return sqrt(sum);
 
 }
-std::vector<double> GradConj::dot_product(std::vector<double>,std::vector<double>) const
+std::vector<double> GradConj::dot_product(std::vector<double> x,std::vector<double> y) const
 {
-
+	int n=x.size();
+	int m=y.size();
+	if(m!=n)
+	{
+		exit(0);
+	}else{
+		std::vector<double> z(n);
+		for(int i=0; i<n; i++)
+		{
+			z.push_back(x[i]*y[i]);
+		}
+		return z;
+	}	
 };
 
 

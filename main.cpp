@@ -8,19 +8,6 @@
 using namespace std;
 
 
-void print_matrix(std::vector<double> A)
-{
-  int n=sqrt(A.size());
-  cout<<"la matrice de taille "<<n<<"x"<<n<<endl;
-  for (int i = n; i --> 0; )
-  {
-    for (int j = n; j --> 0; )
-    {
-      cout<<A[i*n+j]<<" ";
-    }
-    cout<<endl;
-  }
-}
 
 void print_vector(std::vector<double> x)
 {
@@ -35,31 +22,66 @@ void print_vector(std::vector<double> x)
 }
 
 
+void print_matrix(std::vector<std::vector<double>> A)
+{
+  cout<<"la diagonale de la matrice:"<<endl;
+  cout<<"[ ";
+  for(int i=0; i<A[0].size();i++)
+  {
+    cout<<A[0][i]<<" ";
+  }
+  cout<<" ]"<<endl;
+  cout<<"la sur diagonale de la matrice:"<<endl;
+  cout<<"[ ";
+  for(int i=0; i<A[1].size();i++)
+  {
+    cout<<A[1][i]<<" ";
+  }
+  cout<<" ]"<<endl;
+  cout<<"la sur-sur diagonale de la matrice:"<<endl;
+  cout<<"[ ";
+  for(int i=0; i<A[2].size();i++)
+  {
+    cout<<A[2][i]<<" ";
+  }
+  cout<<" ]"<<endl;
+  cout<<endl;
+
+}
+
+
+
+
 
 int main(int argc, char** argv)
 {
 
-
-    BC BC_functions();
-    //donées du problème
-    double Lx=1.,Ly=1.,D=1.;
-    int N=500;
-    Problem Pb(BC* BC_functions);
-
-
   
-    // Démarrage du chrono
-    auto start = chrono::high_resolution_clock::now();
+  // Démarrage du chrono
+  auto start = chrono::high_resolution_clock::now();
 
-    //chech the algebra
-    std::vector<double> A(4),b(2);
-    A[0]=1.;A[1]=2.;A[2]=3.;A[3]=4.;
-    b[0]=5.;b[1]=6.;
-    GradConj Gc(A,b);
+  //chech the algebra
+  std::vector<double> A(4),b(2);
+  A[0]=1.;A[1]=2.;A[2]=3.;A[3]=4.;
+  b[0]=5.;b[1]=6.;
+  GradConj Gc(A,b);
 
-    //output test
-    print_matrix(A);
-    print_vector(b);
+  //output test
+  //print_matrix(A);
+  print_vector(b);
+
+  //Problem test
+  BC* BC_functions;
+  //donées du problème
+  double Lx=20.,Ly=30.,D=1.,deltat=1.;
+  int Nx(2),Ny(6),Nt(10);
+
+
+  Problem P=Problem(BC_functions, Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
+  std::vector<std::vector<double>> B(3);
+  B=P.Construct_Matrix();
+
+  print_matrix(B);
 
   
   // Fin du chrono

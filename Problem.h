@@ -13,19 +13,24 @@
 class Problem
 {
 private:
-    int N_,Nt_;
+    int Nx_,Ny_,Nt_;
     double Lx_,Ly_,t;
-    const double D=1.;
-    std::vector<double> A_,F_;
+    double deltax_;
+    double deltay_;
+    double deltat_;
+    const double D_=1.;
+    std::vector<double> F_;
+    std::vector<std::vector<double>> A_;
+
     BC* BC_functions_;
 
 public:
     //constructor
-    Problem(BC* BC_functions);
+    Problem(BC*, int , int , int , double , double, double);
     //destructor
-    ~Problem();
-    std::vector<double> Construct_Matrix(int, double, double){return A_;};
-    std::vector<double> Construct_F(int, double, double){return F_;};
+    ~Problem(){};
+    std::vector<std::vector<double>> Construct_Matrix();
+    std::vector<double> Construct_F(int, double, double);
 };
 
 
