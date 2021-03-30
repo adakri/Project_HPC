@@ -4,6 +4,7 @@
 #include <math.h>
 #include "Problem.h"
 #include "GradConj.h"
+#include "BC.h"
 
 
 using namespace std;
@@ -125,13 +126,12 @@ int main(int argc, char** argv)
 
 
   //Problem test
-  BC* BC_functions;
   //donées du problème
   double Lx=5.,Ly=4.,D=1.,deltat=1.;
   int Nx=4,Ny=3,Nt=1;
 
 
-  Problem P=Problem(BC_functions, Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
+  Problem P=Problem(Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
   std::vector<std::vector<double>> B(3);
   B=P.Construct_Matrix();
 
@@ -184,6 +184,17 @@ int main(int argc, char** argv)
   //vérif
   print_vector(mc.product(B,y,Nx,Ny));
   print_vector(g);
+
+
+  //test Bc functions
+  BC bc(&P);
+  test=bc.Initial_condition(10,20,25,4);
+  cout<<"test functions "<<test<<endl;
+
+
+  //implémentation du cas 4
+
+  
 
 
 

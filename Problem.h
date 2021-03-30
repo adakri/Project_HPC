@@ -6,7 +6,6 @@
 #include <iostream>
 #include <vector>
 
-#include "BC.h"
 #include "GradConj.h"
 
 
@@ -22,15 +21,19 @@ private:
     std::vector<double> F_;
     std::vector<std::vector<double>> A_;
 
-    BC* BC_functions_;
 
 public:
     //constructor
-    Problem(BC*, int , int , int , double , double, double);
+    Problem(int , int , int , double , double, double);
     //destructor
     ~Problem(){};
     std::vector<std::vector<double>> Construct_Matrix();
     std::vector<double> Construct_F(int, double, double);
+    double get_Lx() const {return Lx_;} ;
+    double get_Ly() const {return Ly_;} ;
+    double get_Nx() const {return Nx_;} ;
+    double get_Ny() const {return Ny_;} ;
+
 };
 
 

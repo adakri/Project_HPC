@@ -1,18 +1,35 @@
 #ifndef _BC_CPP
 
+#include "Problem.h"
 #include "BC.h"
+#include <math.h>
 #include <cmath>
 
-BC::BC() 
+
+#define _USE_MATH_DEFINES
+
+BC::BC(Problem* problem): Pb_(problem),Lx(Pb_->get_Lx()),Ly(Pb_->get_Ly())
 {
   std::cout << "La lecture des fonctions relatives au problème" << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
 }
 
 
-double BC::Initial_condition(const double x, const double y) const
+double BC::Initial_condition(const double x, const double y, const double t, const int cas) const
 {
-  return 0.; 
+  if ( cas==4 )
+  {
+    return 2*(y-y*y+x-x*x);
+  }
+  else if ( cas==5)
+  {  return sin(x)+cos(y);
+  }
+  else if ( cas ==6 )
+  { 
+    return exp(-(x-Lx/2)*(x-Lx/2))*exp(-(y-Ly/2)*(x-Ly/2))*cos( M_PI*t/2);
+  }else{
+    std::cout<<"choix indisponible"<<std::endl;
+  }
 }
 
 

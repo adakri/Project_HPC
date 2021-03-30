@@ -6,7 +6,7 @@
 #include <iostream>
 
 // Constructeur
-Problem::Problem(BC* BC_functions, int Nx , int Ny, int Nt, double Lx, double Ly, double deltat) : BC_functions_(BC_functions)
+Problem::Problem(int Nx , int Ny, int Nt, double Lx, double Ly, double deltat)
 {
 	Lx_=Lx;
 	Ly_=Ly;
