@@ -13,8 +13,7 @@ CXX_FLAGS = $(DEBUG_FLAG)
 PROG = run
 
 # Les fichiers source à compiler
-SRC = main.cpp Problem.cpp BC.cpp
-
+SRC = main.cpp GradConj.cpp Problem.cpp BC.cpp 
 # La commande complète : compile seulement si un fichier a été modifié
 $(PROG) : $(SRC)
 	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)

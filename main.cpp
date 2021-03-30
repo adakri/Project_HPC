@@ -4,25 +4,20 @@
 #include <math.h>
 #include "Problem.h"
 #include "GradConj.h"
+
+
 using namespace std;
 
 
-std::vector<double> product1(std::vector<std::vector<double>> A,std::vector<double> x, int Nx, int Ny)
+#define SHOW(a) std::cout << #a << std::endl;
+
+/* std::vector<double> product1(std::vector<std::vector<double>> A,std::vector<double> x, int Nx, int Ny)
 {
 	//ajouter la partie sim (seulement riangle sup * vect)
 	std::vector<double> y;
   bool a,b,c,d;
 	for(int i=0; i<Nx*Ny; i++)
 	{
-		/*if(i>Nx*(Ny-1))
-		{
-			y.push_back(A[0][i]*x[(i%Nx)* Nx + i]+A[1][i]*x[(i%Nx)* Nx + i + 1 ]);
-		}else if(i==Nx*Ny-1)
-		{
-			y.push_back(A[0][i]*x[(i%Nx) * Nx + i]);
-		}/*else{
-			y.push_back(A[0][i]*x[(i%Nx)* Nx + i]+A[1][i]*x[(i%Nx)* Nx + i + 1 ]+A[2][i]*x[(i%Nx)* (Nx+1) + i]);
-		}*/
     a=(i>Nx-1);
     b=(i<Nx*(Ny-1));
     c=(i>0);
@@ -31,16 +26,18 @@ std::vector<double> product1(std::vector<std::vector<double>> A,std::vector<doub
 
 	}
   return y;
-}
+} */
 void print_vector(std::vector<double> x)
 {
   int n=x.size();
   cout<<"le vecteur de taille "<<n<<endl;
+  
   for (int i = 0; i<n; i++)
   {
     cout<<x[i]<<" ";
   }
   cout<<endl;
+  cout<<"----------------------------------"<<endl;
 
 }
 
@@ -114,15 +111,18 @@ int main(int argc, char** argv)
   // Démarrage du chrono
   auto start = chrono::high_resolution_clock::now();
 
-  //chech the algebra
+
+
+
+  //check the algebra and simple output
   std::vector<double> A(4),b(2);
   A[0]=1.;A[1]=2.;A[2]=3.;A[3]=4.;
   b[0]=5.;b[1]=6.;
-//  GradConj Gc(A,b);
-
-  //output test
-  //print_matrix(A);
   print_vector(b);
+
+
+
+
 
   //Problem test
   BC* BC_functions;
@@ -135,18 +135,62 @@ int main(int argc, char** argv)
   std::vector<std::vector<double>> B(3);
   B=P.Construct_Matrix();
 
+  //test of matrix construction (**** checkede)
   print_matrix(B);
 
-  //print_matrix_verbose(B);
-//  GradConj mc(A,b);
+
+  // operator = is working :(
+  std::vector<double> v(4,1.);
+  std::vector<double> u(4);
+  u=v;
+  SHOW(u);
+  print_vector(v);
+  SHOW(v);
+  print_vector(u);
+
+
+  //test od static methods-----------------------------
   std::vector<double> y(Nx*Ny);
   std::vector<double> g(Nx*Ny,1.);
-  y=product1(B,g,Nx,Ny);
+
+  GradConj mc(B,g,Nx,Ny);
+
+  y=mc.product(B,g,Nx,Ny);
+  SHOW(y);
   print_vector(y);
-  GradConj mc(B,y);
-  double state=0.001;
-  mc.Solve(state,g);
+
+  y=mc.prod_scal(g,5.);
+  SHOW(y);
+  print_vector(y);
+
+
+  double test(0.);
+  test=mc.dot_product(g,y);
+  SHOW(y);
+  cout<<"prod scalaire "<<test<<endl;
+
+  test=mc.norm(g);
+  SHOW(y);
+   cout<<"norm "<<test<<endl;
+ 
+
+
+  //test of conjugate gradient
+  //grad conj B,g
+  int state=100; //nb_iter
+  mc.Solve(state,y);
+  print_vector(y);
+
+  //vérif
+  print_vector(mc.product(B,y,Nx,Ny));
   print_vector(g);
+
+
+
+
+
+
+
   // Fin du chrono
   auto finish = chrono::high_resolution_clock::now();
   double t = chrono::duration_cast<chrono::seconds>(finish-start).count();
