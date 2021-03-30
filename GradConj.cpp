@@ -145,7 +145,7 @@ void GradConj::Solve(int state,std::vector<double>& u)
 
 	}
 	cout<<"le second terme"<<endl;
-	print_vector1(b);
+	//print_vector1(b);
 
 	temp=GradConj::product(A,x,Nx_,Ny_);
 	print_vector1(temp);
@@ -163,28 +163,25 @@ void GradConj::Solve(int state,std::vector<double>& u)
 	while (j<=k_)
 	{
 
-		cout<<"________________________loop_____________"<<endl;
+		//cout<<"________________________loop_____________"<<endl;
 		z=GradConj::product(A,p,Nx_,Ny_);
-		print_vector1(z);
+		//print_vector1(z);
 		alpha= (GradConj::dot_product(r,r) )  /(GradConj::dot_product(z,p));
-		temp=GradConj::prod_scal(p,alpha);
-		debug;
-		xSuivant=GradConj::sum(x,temp,1);
-        temp,GradConj::prod_scal(p,alpha);
-        rSuivant=GradConj::sum(r,temp,-1);
+		//debug;
+		xSuivant=GradConj::sum(x,GradConj::prod_scal(p,alpha),1);
+        rSuivant=GradConj::sum(r,GradConj::prod_scal(z,alpha),-1);
 		gamma= GradConj::dot_product(rSuivant,rSuivant) /GradConj::dot_product(r,r);
-    	temp=GradConj::prod_scal(p,gamma);
-    	p=GradConj::sum(rSuivant,temp,1);
+    	p=GradConj::sum(rSuivant,prod_scal(p,gamma),1);
 		x=xSuivant;
-		cout<<"----------------------------------------"<<endl;
+		//cout<<"----------------------------------------"<<endl;
 		r=rSuivant;
 		beta=GradConj::norm(r);
 		nb_iterat_=nb_iterat_ +1;
 		j++;
-/* 		if(beta<pow(10,-100))
+		if(beta<pow(10,-10))
 		{
 			break;
-		} */
+		} 
 	}
 	cout<<nb_iterat_<<endl;
 

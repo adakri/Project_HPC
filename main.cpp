@@ -150,8 +150,8 @@ int main(int argc, char** argv)
 
 
   //test od static methods-----------------------------
-  std::vector<double> y(Nx*Ny);
-  std::vector<double> g(Nx*Ny,1.);
+  std::vector<double> y(Nx*Ny,2.);
+  std::vector<double> g(Nx*Ny,4.);
 
   GradConj mc(B,g,Nx,Ny);
 
