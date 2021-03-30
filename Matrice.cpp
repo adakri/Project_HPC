@@ -24,12 +24,12 @@ Matrice Matrice::operator+(Matrice &B)
         {
             somme(i,j)=this->_matrice[i][j]+B(i,j);
         }
-        
+
     }
-    
+
     return somme;
 }
-/*Matrice Matrice::operator=(Matrice &B)
+Matrice Matrice::operator=(Matrice &B)
 {
     for (int i = 0; i < _lign; i++)
     {
@@ -40,7 +40,7 @@ Matrice Matrice::operator+(Matrice &B)
         return B;
     }
 
-}*/
+}
 Matrice Matrice::operator-(Matrice &B)
 {
     Matrice difference(_lign,_colone,0.0);
@@ -50,15 +50,15 @@ Matrice Matrice::operator-(Matrice &B)
         {
             difference(i,j)=this->_matrice[i][j]-B(i,j);
         }
-        
+
     }
-    
+
     return difference;
 }
 Matrice Matrice::operator*(Matrice &B)
 {
     Matrice K(_lign,_colone,0.0);
-    
+
     for (int i = 0; i < _lign; i++)
     {
         for (int j = 0; j < _colone; j++)
@@ -66,9 +66,9 @@ Matrice Matrice::operator*(Matrice &B)
             K(i,j)=this->_matrice[i][j];
         }
     }
-    
+
     Matrice prod_CSR(_lign,1,0.0);
-    
+
     int a=0;
     for (int i = 0; i < _lign; i++)
     {
@@ -81,9 +81,9 @@ Matrice Matrice::operator*(Matrice &B)
             printf("NOP\n");
             prod_CSR(i,a)=prod_CSR(i,a)+K.get_AA()[j]*B(K.get_JA()[j],a);
         }
-        
+
     }
-   
+
     return prod_CSR;
 }
 
@@ -91,7 +91,7 @@ double& Matrice::operator()(int &lign,int &colone)
 {
     return this->_matrice[lign][colone];
 }
-void Matrice::print() 
+void Matrice::print()
 {
     cout << "Matrice: " << endl;
     for (int i = 0; i < _lign; i++) {
@@ -110,9 +110,9 @@ void Matrice::Creuse()
     vector<int> IA(_lign),JA(nnz);
     IA[0]=0.0;
     printf("NOP\n");*/
-    
+
     for (int i = 0; i < _lign; i++) {
-        for (int j = 0; j <_colone; j++) 
+        for (int j = 0; j <_colone; j++)
         {
             printf("NOP1\n");
            if(this->_matrice[i][j]!=0)
@@ -134,6 +134,6 @@ void Matrice::Creuse()
     _IA=IA;
     _JA=JA;
     _nnz=nnz;*/
-    
-   
+
+
 }

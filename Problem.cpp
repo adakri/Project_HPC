@@ -48,7 +48,7 @@ std::vector<std::vector<double>> Problem::Construct_Matrix()
 
 	for(int i=0; i<Nx_*Ny_-1;i++)
 	{
-		if(i%Nx_==0)
+		if((i+1)%Nx_==0)
 		{
 			A[1].push_back(0.);
 		}else{
@@ -60,7 +60,7 @@ std::vector<std::vector<double>> Problem::Construct_Matrix()
 	{
 		A[2].push_back(phiy);
 	}
-	return A;	
+	return A;
 }
 
 

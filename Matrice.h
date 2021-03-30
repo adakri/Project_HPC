@@ -18,7 +18,7 @@ class Matrice
         Matrice operator+(Matrice &);
         Matrice operator-(Matrice &);
         Matrice operator*(Matrice &);
-        //Matrice operator=(Matrice &);
+        Matrice operator=(Matrice &);
         //Les opérations matrice scalaire
         Matrice operator+(double &);
         Matrice operator-(double &);
