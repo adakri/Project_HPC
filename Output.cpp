@@ -16,6 +16,8 @@ Output::Output(Problem* Pb) : P_(Pb)
   std::cout<<"Classe IO initié"<<std::endl;
 }
 
+
+//in representation
 void Output::Save_sol(std::string st)
 {
   int Nx=P_->get_Nx();
@@ -35,7 +37,7 @@ void Output::Save_sol(std::string st)
       {
         x=i*dx;
         y=j*dy;
-        myfile<<x<<" "<<y<<" "<<sol[j+i*Nx]<<endl;
+        myfile<<x<<" "<<y<<" "<<sol[i+j*Nx]<<endl;
       }
     }
     myfile.close();
