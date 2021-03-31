@@ -4,16 +4,22 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <chrono>
-#include <math.h>
+#include <string>
+
+#include "Problem.h"
 
 
-void print_vector(std::vector<double> x);
 
-
-void print_matrix(std::vector<std::vector<double>> A);
-
-void print_matrix_verbose(std::vector<std::vector<double>> A);
+class Output
+{
+    private:
+        Problem* P_;
+    public:
+        Output(Problem*);
+        ~Output(){};
+        void Save_sol(std::vector<double>& sol, int n, std::string st);
+        void splot_solution(std::string);
+};
 
 
 #endif

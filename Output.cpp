@@ -1,50 +1,69 @@
+#ifndef _IO_CPP
+
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+
 #include "Output.h"
+
 
 using namespace std;
 
-void print_vector(std::vector<double> x)
+Output::Output(Problem* Pb) : P_(Pb)
 {
-  int n=x.size();
-  cout<<"le vecteur de taille "<<n<<endl;
-  for (int i = 0; i<n; i++)
-  {
-    cout<<x[i]<<" ";
-  }
-  cout<<endl;
- 
+  std::cout<<"Classe IO initié"<<std::endl;
 }
 
-
-void print_matrix(std::vector<std::vector<double>> A)
+void Output::Save_sol(std::vector<double>& sol, int n, std::string st)
 {
-  cout<<"la diagonale de la matrice:"<<endl;
-  cout<<"[ ";
-  for(int i=0; i<A[0].size();i++)
+  int Nx=P_->get_Nx();
+  int Ny=P_->get_Ny();
+  double x,y,dx=P_->get_dx(),dy=P_->get_dy();
+  if(sol.size()!=Nx*Ny)
   {
-    cout<<A[0][i]<<" ";
+    cout<<"solution de mauvaise taille "<<sol.size()<<endl;
+  }else{
+    ofstream myfile;
+    myfile.open("st");
+    for(int i=0; i<Ny; i++)
+    {
+      for(int j=0; j<Nx; j++)
+      {
+        x=i*dx;
+        y=j*dy;
+        myfile<<x<<" "<<y<<" "<<sol[j+i*Nx]<<endl;
+      }
+    }
+    myfile.close();
   }
-  cout<<" ]"<<endl;
-  cout<<"la sur diagonale de la matrice:"<<endl;
-  cout<<"[ ";
-  for(int i=0; i<A[1].size();i++)
-  {
-    cout<<A[1][i]<<" ";
-  }
-  cout<<" ]"<<endl;
-  cout<<"la sur-sur diagonale de la matrice:"<<endl;
-  cout<<"[ ";
-  for(int i=0; i<A[2].size();i++)
-  {
-    cout<<A[2][i]<<" ";
-  }
-  cout<<" ]"<<endl;
-  cout<<endl;
+}
+
+void Output::splot_solution(std::string sol_file_name)
+{
+  //Pour ne pas refaire sur gnuplot un tracé plusieurs fois, surtout en testant.
+	//suffit de load cmd_file_line dans gnuplot
+  string command_filename="cmd_file_line";
+	ofstream command_unit;
+	command_unit.open ( command_filename.c_str ( ) );
+	command_unit << "# " << command_filename << "\n";
+	command_unit << "#\n";
+	command_unit << "#  gnuplot < " << command_filename << "\n";
+	command_unit << "#\n";
+	command_unit << "set term png\n";
+	//Création de l'image en 3D
+	command_unit << "set output 'xy_3d.png'\n";
+	command_unit << "set xlabel '<--- X --->'\n";
+	command_unit << "set ylabel '<--- Y --->'\n";
+	command_unit << "set zlabel '<--- Sol --->'\n";
+	command_unit << "set title 'Solution de l'équation'\n";
+	command_unit << "set grid\n";
+	command_unit << "set style data lines\n";
+	command_unit << "splot '" << sol_file_name
+				<< "' using 1:2:3 lw 1 linecolor rgb 'blue'\n";
 
 }
 
-
-void print_matrix_verbose(std::vector<std::vector<double>> A)
-{
-  
-
-}
+#define _IO_CPP
+#endif

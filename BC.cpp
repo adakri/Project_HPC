@@ -8,14 +8,14 @@
 
 #define _USE_MATH_DEFINES
 
-BC::BC(Problem* problem): Pb_(problem),Lx(Pb_->get_Lx()),Ly(Pb_->get_Ly())
+BC::BC(int Nx, int Ny, double Lx, double Ly) : Lx_(Lx), Ly_(Ly),Nx_(Nx),Ny_(Ny)
 {
   std::cout << "La lecture des fonctions relatives au problème" << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
 }
 
 
-double BC::Initial_condition(const double x, const double y, const double t, const int cas) const
+double BC::Source_term(const double x, const double y, const double t, const int cas) const
 {
   if ( cas==4 )
   {
@@ -26,14 +26,14 @@ double BC::Initial_condition(const double x, const double y, const double t, con
   }
   else if ( cas ==6 )
   { 
-    return exp(-(x-Lx/2)*(x-Lx/2))*exp(-(y-Ly/2)*(x-Ly/2))*cos( M_PI*t/2);
+    return exp(-(x-Lx_/2)*(x-Lx_/2))*exp(-(y-Ly_/2)*(x-Ly_/2))*cos( M_PI*t/2);
   }else{
     std::cout<<"choix indisponible"<<std::endl;
   }
 }
 
 
-double BC::Source_term(const double x, const double y, const double t) const
+double BC::Initial_condition(const double x, const double y, const double t) const
 {
   return 0.;
   

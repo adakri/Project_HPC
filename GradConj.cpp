@@ -8,7 +8,7 @@
 
 
 
-#define debug std::cout <<"We're here"<< std::endl;
+#define debug std::cout <<"step here"<< std::endl;
 
 
 
@@ -148,9 +148,9 @@ void GradConj::Solve(int state,std::vector<double>& u)
 	//print_vector1(b);
 
 	temp=GradConj::product(A,x,Nx_,Ny_);
-	print_vector1(temp);
+	//print_vector1(temp);
 	r=GradConj::sum(b,temp,-1);
-	print_vector1(r);
+	//print_vector1(r);
 	p= r  ;	// calcul du residu
 	double alpha;
 	double gamma;

@@ -131,7 +131,11 @@ int main(int argc, char** argv)
   int Nx=4,Ny=3,Nt=1;
 
 
-  Problem P=Problem(Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
+
+
+
+  BC bc=BC(Nx,Ny,Lx,Ly);
+  Problem P=Problem(&bc,Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
   std::vector<std::vector<double>> B(3);
   B=P.Construct_Matrix();
 
@@ -187,12 +191,18 @@ int main(int argc, char** argv)
 
 
   //test Bc functions
-  BC bc(&P);
-  test=bc.Initial_condition(10,20,25,4);
+  test=bc.Source_term(10,20,25,4);
   cout<<"test functions "<<test<<endl;
 
 
-  //implémentation du cas 4
+
+  //test de construction de F cas 4
+  double tt=0.;
+  std::vector<double> l;
+  P.Construct_F(4,tt,l);
+  print_vector(y);
+
+  //implémentation du cas 4 méthode create second term, class output to print and splot
 
   
 

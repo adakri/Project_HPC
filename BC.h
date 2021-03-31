@@ -14,21 +14,20 @@
 class BC
 {
 private:
-    const Problem* Pb_;
-    int Nx,Ny;
-    double Lx,Ly;
+    int Nx_,Ny_;
+    double Lx_,Ly_;
 public:
     //constructor
-    BC(Problem* problem);
+    BC(int Nx, int Ny, double Lx, double Ly);
     //destructor
     ~BC(){};
     double Exact_solution(const double x, const double y, const double t) const;
 
 
-    double Initial_condition(const double x, const double y, const double t, const int cas) const;
+    double Source_term(const double x, const double y, const double t, const int cas) const;
 
 
-    double Source_term(const double x, const double y, const double t) const;
+    double Initial_condition(const double x, const double y, const double t) const;
     double Neumann_Function(const double x, const double y, const double t) const;
     double Dirichlet_Function(const double x, const double y, const double t) const;
 };
