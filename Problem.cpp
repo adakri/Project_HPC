@@ -1,13 +1,36 @@
 #ifndef _PB_CPP
 
 
-#include "Problem.h"
 #include <fstream>
 #include <iostream>
 
+#include "GradConj.h"
+#include "Problem.h"
+
+
+
+
 #define debug std::cout <<"step here"<< std::endl;
 
-#define size(a) std::cout <<a.size()<< std::endl;
+#define siz(a) std::cout <<a.size()<< std::endl;
+
+
+
+
+void print_vector2(std::vector<double> x)
+{
+  int n=x.size();
+  std::cout<<"le vecteur de taille "<<n<<std::endl;
+  
+  for (int i = 0; i<n; i++)
+  {
+    std::cout<<x[i]<<" ";
+  }
+  std::cout<<std::endl;
+  std::cout<<"----------------------------------"<<std::endl;
+
+}
+
 
 
 // Constructeur
@@ -71,32 +94,53 @@ std::vector<std::vector<double>> Problem::Construct_Matrix()
 void Problem::Construct_F(int cas, double t, std::vector<double>& test) //sol_==un to be used
 {
 	int n=Nx_*Ny_;
-	//F_.resize(n);
-	//size(F_);
+	F_.resize(n);
+	//siz(F_);
 	std::vector<double> z(n);
 	for(int i=0; i<Ny_; i++)
 	{
 		for(int j=0; j<Nx_; j++)
 		{
-			F_.push_back(/*sol_[i*Nx_+j]+*/deltat_ * functions_->Source_term(j*deltay_,i*deltax_,t+deltat_,cas)); //to change
+			F_[i]=(sol_[i*Nx_+j]+deltat_ * functions_->Source_term(j*deltay_,i*deltax_,t+deltat_,cas)); //to change
 		}		
 	}
-	//size(F_)
+	//siz(F_)
 	test.resize(n);
 	test=F_;
 }
 
-void Problem::Solve_problem(int cas, double x, double y)
+void Problem::Solve_problem(int cas, double tf)
 {
 	//initialise u_ par fonction initial etc
+	int n=Nx_*Ny_;
+	sol_.resize(n);
+	for(int i=0; i<n; i++)
+	{
+		sol_[i]=functions_->Source_term(i,i,i,cas); //pour l'instant ça signifie rien
+	}
 
 	//solve Au_=f with gradconj::solve after initialsie or not (static)
-
 	//do as much as needed
-
-
+	int nb_iter=100;
+	double t(0.);
+	std::vector<double> test;
+	while(t<tf)
+	{
+		A_=Problem::Construct_Matrix(); //writes twice to change
+		Problem::Construct_F(cas,t,test);
+		GradConj gc=GradConj(A_,F_,Nx_,Ny_);
+		gc.Solve(nb_iter,sol_);
+		t+=deltat_;
+	}
+	print_vector2(sol_);
 }
 
+std::vector<double> Problem::get_sol()
+{
+	std::vector<double> x(sol_.size());
+	x=sol_;
+	return sol_;
+}
 
 #define _PB_CPP
 #endif

@@ -28,7 +28,7 @@ double BC::Source_term(const double x, const double y, const double t, const int
   { 
     return exp(-(x-Lx_/2)*(x-Lx_/2))*exp(-(y-Ly_/2)*(x-Ly_/2))*cos( M_PI*t/2);
   }else{
-    std::cout<<"choix indisponible"<<std::endl;
+    std::cout<<"choix indisponible "<<cas<<std::endl;
   }
 }
 

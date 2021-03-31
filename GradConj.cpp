@@ -8,7 +8,7 @@
 
 
 
-#define debug std::cout <<"step here"<< std::endl;
+#define debug std::cout <<"step here100"<< std::endl;
 
 
 
@@ -72,7 +72,7 @@ std::vector<double> GradConj::product(std::vector<std::vector<double>> A,std::ve
   return y;
 }
 
-std::vector<double> GradConj::sum(std::vector<double> x,std::vector<double> y, int sign) 
+std::vector<double> GradConj::sum(std::vector<double> x,std::vector<double> y, int sign) //-1 ou 1
 {
 	int n=x.size();
 	int m=y.size();
@@ -132,10 +132,10 @@ double GradConj::dot_product(std::vector<double> x,std::vector<double> y)
 //gradient conjugué
 void GradConj::Solve(int state,std::vector<double>& u)
 {
-	cout<<"**********************GC commences**********************"<<endl;
+	//cout<<"**********************GC commences**********************"<<endl;
   	int n = Nx_*Ny_;
 	k_=state;
-	cout<<"le nombre d'itérations "<<k_<<endl;
+	cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
 	std::vector<std::vector<double>> A(A_);
 	std::vector<double> r(n),b(b_),p(n),temp(n);
 	std::vector<double> x(n);
@@ -144,7 +144,8 @@ void GradConj::Solve(int state,std::vector<double>& u)
 		x[i]=0.;
 
 	}
-	cout<<"le second terme"<<endl;
+	
+	//cout<<"le second terme"<<endl;
 	//print_vector1(b);
 
 	temp=GradConj::product(A,x,Nx_,Ny_);
@@ -160,6 +161,7 @@ void GradConj::Solve(int state,std::vector<double>& u)
 	int j = 0;
 	double beta=GradConj::norm(r);
 	int nb_iterat_=0;
+	
 	while (j<=k_)
 	{
 

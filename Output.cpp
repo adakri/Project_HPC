@@ -16,17 +16,19 @@ Output::Output(Problem* Pb) : P_(Pb)
   std::cout<<"Classe IO initié"<<std::endl;
 }
 
-void Output::Save_sol(std::vector<double>& sol, int n, std::string st)
+void Output::Save_sol(std::string st)
 {
   int Nx=P_->get_Nx();
   int Ny=P_->get_Ny();
+  std::vector<double> sol(Nx*Ny);
+  sol=P_->get_sol();
   double x,y,dx=P_->get_dx(),dy=P_->get_dy();
   if(sol.size()!=Nx*Ny)
   {
     cout<<"solution de mauvaise taille "<<sol.size()<<endl;
   }else{
     ofstream myfile;
-    myfile.open("st");
+    myfile.open(st);
     for(int i=0; i<Ny; i++)
     {
       for(int j=0; j<Nx; j++)
@@ -51,13 +53,13 @@ void Output::splot_solution(std::string sol_file_name)
 	command_unit << "#\n";
 	command_unit << "#  gnuplot < " << command_filename << "\n";
 	command_unit << "#\n";
-	command_unit << "set term png\n";
+	//command_unit << "set term png\n";
 	//Création de l'image en 3D
-	command_unit << "set output 'xy_3d.png'\n";
+	//command_unit << "set output 'xy_3d.png'\n";
 	command_unit << "set xlabel '<--- X --->'\n";
 	command_unit << "set ylabel '<--- Y --->'\n";
 	command_unit << "set zlabel '<--- Sol --->'\n";
-	command_unit << "set title 'Solution de l'équation'\n";
+	command_unit << "set title 'Solution'\n";
 	command_unit << "set grid\n";
 	command_unit << "set style data lines\n";
 	command_unit << "splot '" << sol_file_name

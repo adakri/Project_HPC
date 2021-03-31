@@ -5,11 +5,14 @@
 #include "Problem.h"
 #include "GradConj.h"
 #include "BC.h"
+#include "Output.h"
 
 
 using namespace std;
 
 
+
+#define bloc std::cout<<"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"<<std::endl;
 #define SHOW(a) std::cout << #a << std::endl;
 
 /* std::vector<double> product1(std::vector<std::vector<double>> A,std::vector<double> x, int Nx, int Ny)
@@ -127,7 +130,7 @@ int main(int argc, char** argv)
 
   //Problem test
   //donées du problème
-  double Lx=5.,Ly=4.,D=1.,deltat=1.;
+  double Lx=5.,Ly=4.,D=1.,deltat=1.,tf=10.;
   int Nx=4,Ny=3,Nt=1;
 
 
@@ -196,13 +199,28 @@ int main(int argc, char** argv)
 
 
 
-  //test de construction de F cas 4
+  //test de construction de F cas 4, fait en dehors de la classe, non initié avec sol ça marche
+  /*
   double tt=0.;
   std::vector<double> l;
   P.Construct_F(4,tt,l);
   print_vector(y);
+  */
 
   //implémentation du cas 4 méthode create second term, class output to print and splot
+  bloc
+  int cas=4;
+  P.Solve_problem(cas,tf); //cas 4
+  y=P.get_sol();
+  bloc
+  print_vector(y);
+
+  //sauvegarde du fichier
+  Output io=Output(&P);
+  io.Save_sol("sol.dat");
+  io.splot_solution("sol.dat");
+  
+
 
   
 

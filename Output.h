@@ -17,7 +17,7 @@ class Output
     public:
         Output(Problem*);
         ~Output(){};
-        void Save_sol(std::vector<double>& sol, int n, std::string st);
+        void Save_sol(std::string st);
         void splot_solution(std::string);
 };
 

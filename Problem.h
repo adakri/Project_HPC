@@ -33,14 +33,15 @@ public:
     //problem related
     std::vector<std::vector<double>> Construct_Matrix();
     void Construct_F(int,double, std::vector<double>&);
-    void Solve_problem(int cas, double x, double y);
-    //why? i dunno, might be useful
+    void Solve_problem(int cas, double tf);
+    std::vector<double> get_sol();
     double get_Lx() const {return Lx_;} ;
     double get_Ly() const {return Ly_;} ;
     double get_Nx() const {return Nx_;} ;
     double get_Ny() const {return Ny_;} ;
     double get_dx() const {return deltax_;} ;
     double get_dy() const {return deltay_;} ;
+    //get solution
 
 };
 
