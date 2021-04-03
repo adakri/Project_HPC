@@ -130,8 +130,8 @@ int main(int argc, char** argv)
 
   //Problem test
   //donées du problème
-  double Lx=5.,Ly=4.,D=1.,deltat=1.,tf=10.;
-  int Nx=100,Ny=300,Nt=1;
+  double Lx=1.,Ly=1.,D=1.,deltat=1.,tf=10.;
+  int Nx=10,Ny=30,Nt=1;
 
 
 

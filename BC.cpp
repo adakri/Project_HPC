@@ -39,14 +39,35 @@ double BC::Initial_condition(const double x, const double y, const double t) con
   
 }
 
-double BC::Neumann_Function(const double x, const double y, const double t) const
+
+double BC::Dirichlet_Function0(const double x, const double y, const double t, int cas) const
 {
-  return 0.;
+  if(cas==4)
+  {
+    return 0.;
+  }else if(cas==5){
+    return sin(x)+cos(x);
+  }else if(cas==6){
+    return 0.;
+  }else{
+    std::cout<<"fonctions de dirichlet non sécifié"<<std::endl;
+  }
  
 }
 
-double BC::Dirichlet_Function(const double x, const double y, const double t) const
+
+double BC::Dirichlet_Function1(const double x, const double y, const double t, int cas) const
 {
+  if(cas==4)
+  {
+    return 0.;
+  }else if(cas==5){
+    return sin(x)+cos(y);
+  }else if(cas==6){
+    return 1.;
+  }else{
+    std::cout<<"fonctions de dirichlet non sécifié"<<std::endl;
+  }
   return 0.;
  
 }

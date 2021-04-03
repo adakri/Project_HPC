@@ -28,8 +28,8 @@ public:
 
 
     double Initial_condition(const double x, const double y, const double t) const;
-    double Neumann_Function(const double x, const double y, const double t) const;
-    double Dirichlet_Function(const double x, const double y, const double t) const;
+    double Dirichlet_Function0(const double x, const double y, const double t, int cas) const;
+    double Dirichlet_Function1(const double x, const double y, const double t, int cas) const;
 };
 
 

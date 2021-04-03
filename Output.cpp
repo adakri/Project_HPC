@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include "Output.h"
-
+#include <stdio.h>
 
 using namespace std;
 
@@ -35,9 +35,9 @@ void Output::Save_sol(std::string st)
     {
       for(int j=0; j<Nx; j++)
       {
-        x=i*dx;
-        y=j*dy;
-        myfile<<x<<" "<<y<<" "<<sol[i+j*Nx]<<endl;
+        x=j*dx;
+        y=i*dy;
+        myfile<<x<<" "<<y<<" "<<sol[j+i*Nx]<<endl;
       }
     }
     myfile.close();
@@ -66,6 +66,11 @@ void Output::splot_solution(std::string sol_file_name)
 	command_unit << "set style data lines\n";
 	command_unit << "splot '" << sol_file_name
 				<< "' using 1:2:3 lw 1 linecolor rgb 'blue'\n";
+
+
+
+
+  system("gnuplot");
 
 }
 
