@@ -65,13 +65,13 @@ void Output::splot_solution(std::string sol_file_name)
 	command_unit << "set grid\n";
 	command_unit << "set style data lines\n";
 	command_unit << "splot '" << sol_file_name
-				<< "' using 1:2:3 lw 1 linecolor rgb 'blue'\n";
+				<< "' using 1:2:3 w p \n";
 
 
 
 
-  system("gnuplot");
-
+/*   system("gnuplot");
+ */
 }
 
 #define _IO_CPP

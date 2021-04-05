@@ -101,7 +101,7 @@ void Problem::Construct_F(int cas, double t, std::vector<double>& test) //sol_==
 	{
 		for(int j=0; j<Nx_; j++)
 		{
-			F_[i]=(sol_[i*Nx_+j]+deltat_ * functions_->Source_term(j*deltay_,i*deltax_,t+deltat_,cas)); //to change
+			F_[i*Nx_+j]=(sol_[i*Nx_+j]+ functions_->Source_term(j*deltax_,i*deltay_,t+deltat_,cas)); //to change
 		}		
 	}
 	//siz(F_)
