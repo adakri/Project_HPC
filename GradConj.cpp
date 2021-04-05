@@ -40,20 +40,6 @@ GradConj::GradConj(std::vector<std::vector<double>> A,std::vector<double> b, int
 }
 
 //matrix vector and vector vector manipulations
-void GradConj::operator_vec(std::vector<double>&A,std::vector<double>B)
-{
-  for(int i=0;i<A.size();i++)
-  {
-    A[i]=B[i];
-  }
-}
-void GradConj::operator_mat(std::vector<std::vector<double>>&A,std::vector<std::vector<double>>B)
-{
-  for(int i=0;i<A.size();i++)
-  {
-    operator_vec(A[i],B[i]);
-  }
-}
 
 std::vector<double> GradConj::product(std::vector<std::vector<double>> A,std::vector<double> x, int Nx, int Ny) 
 {
@@ -136,6 +122,72 @@ void GradConj::Solve(int state,std::vector<double>& u)
   	int n = Nx_*Ny_;
 	k_=state;
 	cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
+	std::vector<std::vector<double>> A(A_);
+	std::vector<double> r(n),b(b_),p(n),temp(n);
+	std::vector<double> x(n);
+	for (int i = 0; i < n; i++)
+	{
+		x[i]=0.;
+
+	}
+	
+	//cout<<"le second terme"<<endl;
+	//print_vector1(b);
+
+	temp=GradConj::product(A,x,Nx_,Ny_);
+	//print_vector1(temp);
+	r=GradConj::sum(b,temp,-1);
+	//print_vector1(r);
+	p= r  ;	// calcul du residu
+	double alpha;
+	double gamma;
+	std::vector<double> rSuivant(n);
+	std::vector<double> xSuivant(n);
+	std::vector<double> z(n);
+	int j = 0;
+	double beta=GradConj::norm(r);
+	int nb_iterat_=0;
+	
+	while (j<=k_)
+	{
+
+		//cout<<"________________________loop_____________"<<endl;
+		z=GradConj::product(A,p,Nx_,Ny_);
+		//print_vector1(z);
+		alpha= (GradConj::dot_product(r,r) )  /(GradConj::dot_product(z,p));
+		//debug;
+		xSuivant=GradConj::sum(x,GradConj::prod_scal(p,alpha),1);
+        rSuivant=GradConj::sum(r,GradConj::prod_scal(z,alpha),-1);
+		gamma= GradConj::dot_product(rSuivant,rSuivant) /GradConj::dot_product(r,r);
+    	p=GradConj::sum(rSuivant,prod_scal(p,gamma),1);
+		x=xSuivant;
+		//cout<<"----------------------------------------"<<endl;
+		r=rSuivant;
+		beta=GradConj::norm(r);
+		nb_iterat_=nb_iterat_ +1;
+		j++;
+		if(beta<pow(10,-10))
+		{
+			break;
+		} 
+	}
+	cout<<nb_iterat_<<endl;
+
+	cout<<"----------------Gradient conjugué------------------------"<<endl;
+  u.resize(n);
+  u=x;
+}
+
+
+//gradient conjugué version parallèle
+void GradConj::MPI_Solve(int state,std::vector<double>& u)
+{
+	//cout<<"**********************GC commences**********************"<<endl;
+  	int n = Nx_*Ny_;
+	k_=state;
+	cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
+
+
 	std::vector<std::vector<double>> A(A_);
 	std::vector<double> r(n),b(b_),p(n),temp(n);
 	std::vector<double> x(n);

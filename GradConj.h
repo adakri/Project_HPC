@@ -29,9 +29,8 @@ public:
 
 	void Solve(int ,std::vector<double>&);
 
-	static void operator_vec(std::vector<double>&,std::vector<double>);
+	void MPI_Solve(int ,std::vector<double>&);
 
-	static void operator_mat(std::vector<std::vector<double>>&,std::vector<std::vector<double>>);
 
 };
 

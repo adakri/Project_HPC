@@ -2,6 +2,8 @@
 #include <fstream>
 #include <chrono>
 #include <math.h>
+#include <mpi.h>
+
 #include "Problem.h"
 #include "GradConj.h"
 #include "BC.h"
@@ -221,7 +223,9 @@ int main(int argc, char** argv)
   io.splot_solution("sol.dat");
   
 
-
+  bloc
+  //test of parallel region
+  MPI_Init( &argc, &argv );
   
 
 
