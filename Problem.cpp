@@ -21,7 +21,7 @@ void print_vector2(std::vector<double> x)
 {
   int n=x.size();
   std::cout<<"le vecteur de taille "<<n<<std::endl;
-  
+
   for (int i = 0; i<n; i++)
   {
     std::cout<<x[i]<<" ";
@@ -102,13 +102,55 @@ void Problem::Construct_F(int cas, double t, std::vector<double>& test) //sol_==
 		for(int j=0; j<Nx_; j++)
 		{
 			F_[i*Nx_+j]=(sol_[i*Nx_+j]+ functions_->Source_term(j*deltax_,i*deltay_,t+deltat_,cas)); //to change
-		}		
+		}
 	}
 	//siz(F_)
 	test.resize(n);
 	test=F_;
 }
-
+void Problem:: Construct_Bd(int cas,double t)
+{
+  int n=Nx_*Ny_;
+  Bd_.resize(n);
+  for(int i=0; i<Ny_; i++)
+	{
+		for(int j=0; j<Nx_; j++)
+		{
+			if(i==0&&j==0)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==0&&j!=0&&j!=Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==0&&j==Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==Ny_-1&&j==0)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==Ny_-1&&j==Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==Ny_-1&&j!=0&&j!=Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(j==0&&i!=0&&i!=Ny_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_);
+      }
+      if(j==Nx_-1&&i!=0&&i!=Ny_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_);
+      }
+		}
+	}
+}
 void Problem::Solve_problem(int cas, double tf)
 {
 	//initialise u_ par fonction initial etc
@@ -128,7 +170,10 @@ void Problem::Solve_problem(int cas, double tf)
 	{
 		A_=Problem::Construct_Matrix(); //writes twice to change
 		Problem::Construct_F(cas,t,test);
-		GradConj gc=GradConj(A_,F_,Nx_,Ny_);
+    Problem::Construct_Bd(cas,t);
+    std::vector<double> S(Nx_*Ny_,0.);
+    S=GradConj::sum(F_,Bd_,1);
+		GradConj gc=GradConj(A_,S,Nx_,Ny_);
 		gc.Solve(nb_iter,sol_);
 		t+=deltat_;
 	}

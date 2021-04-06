@@ -2,7 +2,7 @@
 #include <fstream>
 #include <chrono>
 #include <math.h>
-#include <mpi.h>
+//#include <mpi.h>
 
 #include "Problem.h"
 #include "GradConj.h"
@@ -199,7 +199,7 @@ int main(int argc, char** argv)
 
   //implémentation du cas 4 méthode create second term, class output to print and splot
   bloc
-  int cas=4;
+  int cas=5;
   P.Solve_problem(cas,tf); //cas 4
   y=P.get_sol();
   bloc
@@ -209,10 +209,15 @@ int main(int argc, char** argv)
   Output io=Output(&P);
   io.Save_sol("sol.dat");
   io.splot_solution("sol.dat");
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7cdf85913b8c395c9cc97eed09482af31a8283d5
 
 
 
   //test of parallel region
+<<<<<<< HEAD
   bloc
   //test of sum inside parallel region
   std::vector<double> y1(Nx*Ny,2.);
@@ -232,6 +237,10 @@ int main(int argc, char** argv)
   print_vector(y);
 
   MPI_Finalize();
+=======
+//  MPI_Init( &argc, &argv );
+
+>>>>>>> 7cdf85913b8c395c9cc97eed09482af31a8283d5
 
   //print_vector(y);
 

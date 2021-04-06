@@ -13,14 +13,14 @@
 class Problem
 {
 private:
-    const BC* functions_; 
+    const BC* functions_;
     int Nx_,Ny_,Nt_;
     double Lx_,Ly_,t_;
     double deltax_=Lx_/(Nx_+1.);
     double deltay_=Ly_/(Ny_+1.);
     double deltat_=t_/(Nt_+1.);
     const double D_=1.;
-    std::vector<double> F_;
+    std::vector<double> F_,Bd_;
     std::vector<std::vector<double>> A_;
     std::vector<double> sol_;
 
@@ -33,6 +33,7 @@ public:
     //problem related
     std::vector<std::vector<double>> Construct_Matrix();
     void Construct_F(int,double, std::vector<double>&);
+    void Construct_Bd(int,double);
     void Solve_problem(int cas, double tf);
     std::vector<double> get_sol();
     double get_Lx() const {return Lx_;} ;
