@@ -8,4 +8,4 @@ set zlabel '<--- Sol --->'
 set title 'Solution'
 set grid
 set style data lines
-splot 'sol.dat' using 1:2:3 w p 
+splot 'sol.dat' using 1:2:3 w p , sin(x)+cos(y)

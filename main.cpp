@@ -2,7 +2,7 @@
 #include <fstream>
 #include <chrono>
 #include <math.h>
-#include <mpi.h>
+//#include <mpi.h>
 
 #include "Problem.h"
 #include "GradConj.h"
@@ -37,7 +37,7 @@ void print_vector(std::vector<double> x)
 {
   int n=x.size();
   cout<<"le vecteur de taille "<<n<<endl;
-  
+
   for (int i = 0; i<n; i++)
   {
     cout<<x[i]<<" ";
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
   test=mc.norm(g);
   SHOW(y);
    cout<<"norm "<<test<<endl;
- 
+
 
 
   //test of conjugate gradient
@@ -211,7 +211,7 @@ int main(int argc, char** argv)
 
   //implémentation du cas 4 méthode create second term, class output to print and splot
   bloc
-  int cas=4;
+  int cas=5;
   P.Solve_problem(cas,tf); //cas 4
   y=P.get_sol();
   bloc
@@ -221,12 +221,12 @@ int main(int argc, char** argv)
   Output io=Output(&P);
   io.Save_sol("sol.dat");
   io.splot_solution("sol.dat");
-  
+
 
   bloc
   //test of parallel region
-  MPI_Init( &argc, &argv );
-  
+//  MPI_Init( &argc, &argv );
+
 
 
 

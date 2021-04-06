@@ -25,7 +25,7 @@ double BC::Source_term(const double x, const double y, const double t, const int
   {  return sin(x)+cos(y);
   }
   else if ( cas ==6 )
-  { 
+  {
     return exp(-(x-Lx_/2)*(x-Lx_/2))*exp(-(y-Ly_/2)*(x-Ly_/2))*cos( M_PI*t/2);
   }else{
     std::cout<<"choix indisponible "<<cas<<std::endl;
@@ -36,7 +36,7 @@ double BC::Source_term(const double x, const double y, const double t, const int
 double BC::Initial_condition(const double x, const double y, const double t) const
 {
   return 0.;
-  
+
 }
 
 
@@ -52,7 +52,7 @@ double BC::Dirichlet_Function0(const double x, const double y, const double t, i
   }else{
     std::cout<<"fonctions de dirichlet non sécifié"<<std::endl;
   }
- 
+
 }
 
 
@@ -69,7 +69,7 @@ double BC::Dirichlet_Function1(const double x, const double y, const double t, i
     std::cout<<"fonctions de dirichlet non sécifié"<<std::endl;
   }
   return 0.;
- 
+
 }
 
 double BC::Exact_solution(const double x, const double y, const double t) const
