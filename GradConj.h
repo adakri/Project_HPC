@@ -23,9 +23,15 @@ public:
 
 	static double dot_product(std::vector<double>,std::vector<double>) ;
 
+	static double MPI_dot_product(std::vector<double>,std::vector<double>) ;
+
 	static std::vector<double> sum(std::vector<double> ,std::vector<double> y, int sign) ;
 
+	static std::vector<double> MPI_sum(std::vector<double> ,std::vector<double> y, int sign) ;
+
 	static double norm(std::vector<double>) ;
+
+	static double MPI_norm(std::vector<double>) ;
 
 	void Solve(int ,std::vector<double>&);
 

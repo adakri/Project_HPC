@@ -17,27 +17,15 @@ using namespace std;
 #define bloc std::cout<<"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"<<std::endl;
 #define SHOW(a) std::cout << #a << std::endl;
 
-/* std::vector<double> product1(std::vector<std::vector<double>> A,std::vector<double> x, int Nx, int Ny)
-{
-	//ajouter la partie sim (seulement riangle sup * vect)
-	std::vector<double> y;
-  bool a,b,c,d;
-	for(int i=0; i<Nx*Ny; i++)
-	{
-    a=(i>Nx-1);
-    b=(i<Nx*(Ny-1));
-    c=(i>0);
-    d=(i<Nx*Ny-1);
-    y.push_back(A[0][i]*x[i]+d*A[1][i]*x[i+1]+b*A[2][i]*x[i+Nx]+c*A[1][i-1]*x[i-1]+a*A[2][i-Nx]*x[i-Nx]);
 
-	}
-  return y;
-} */
+
+
+
 void print_vector(std::vector<double> x)
 {
   int n=x.size();
   cout<<"le vecteur de taille "<<n<<endl;
-  
+
   for (int i = 0; i<n; i++)
   {
     cout<<x[i]<<" ";
@@ -133,7 +121,7 @@ int main(int argc, char** argv)
   //Problem test
   //donées du problème
   double Lx=1.,Ly=1.,D=1.,deltat=1.,tf=10.;
-  int Nx=40,Ny=40,Nt=1;
+  int Nx=4,Ny=4,Nt=1;
 
 
 
@@ -181,7 +169,7 @@ int main(int argc, char** argv)
   test=mc.norm(g);
   SHOW(y);
    cout<<"norm "<<test<<endl;
- 
+
 
 
   //test of conjugate gradient
@@ -221,13 +209,31 @@ int main(int argc, char** argv)
   Output io=Output(&P);
   io.Save_sol("sol.dat");
   io.splot_solution("sol.dat");
-  
 
-  bloc
+
+
   //test of parallel region
-  MPI_Init( &argc, &argv );
-  
+  bloc
+  //test of sum inside parallel region
+  std::vector<double> y1(Nx*Ny,2.);
+  std::vector<double> g1(Nx*Ny,4.);
+  // print_vector(y1);
+  // print_vector(g1);
+  MPI_Init(&argc,&argv);
 
+
+  y=mc.MPI_sum(y1,g1,-1);
+  //la somme fonctionne
+
+  //test of sum inside parallel region
+  //test=mc.MPI_dot_product(y1,g1);
+
+
+  print_vector(y);
+
+  MPI_Finalize();
+
+  //print_vector(y);
 
 
 
