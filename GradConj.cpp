@@ -189,20 +189,6 @@ std::vector<double> GradConj::MPI_sum(std::vector<double> x ,std::vector<double>
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 std::vector<double> GradConj::prod_scal(std::vector<double> x,double y)
 {
 	int n=x.size();
@@ -240,6 +226,102 @@ double GradConj::dot_product(std::vector<double> x,std::vector<double> y)
 		return z;
 	}
 };
+
+
+double GradConj::MPI_dot_product(std::vector<double> x ,std::vector<double> y)
+{
+  int n=x.size();
+	int m=y.size();
+  int root=0;
+  if(m!=n)
+	{
+		exit(0);
+	}else{
+    //à recontruire
+    std::vector<int> count(2);
+	double temp,z;
+    //env parallel
+    int me,Np,tag,input,begin,end;
+    tag=100;
+    MPI_Comm_size(MPI_COMM_WORLD,&Np);
+    MPI_Comm_rank(MPI_COMM_WORLD,&me);
+
+
+
+    if(me!=root)
+    {
+      count=charge_c(n,Np,me);
+      begin=count[0];
+      end=count[1];
+
+      int size(end-begin+1);
+      for(int i=0; i<size; i++)
+      {
+        temp=x[i]*y[i];
+      }
+
+      //bloc vérif
+      // siz(temp)
+      // print_vector1(temp);
+      // cout<<"---------------------"<<me<<" "<<begin<<" "<<end<<endl;
+
+      MPI_Send(&temp,1,MPI_DOUBLE,root,tag,MPI_COMM_WORLD);
+    }else{
+      //travail usuel
+      count=charge_c(n,Np,me);
+      begin=count[0];
+      end=count[1];
+      int size(end-begin+1);
+
+      for(int i=0; i<size; i++)
+      {
+        temp=x[i]*y[i];
+      }
+      //bloc vérif
+      // siz(temp)
+      // print_vector1(temp);
+      // cout<<"---------------------"<<me<<" "<<begin<<" "<<end<<endl;
+      //bloc vérif
+      // siz(temp)
+      // print_vector1(temp);
+      // cout<<"---------------------"<<me<<" "<<begin<<" "<<end<<endl;
+      //reconstruction
+      MPI_Status status;
+      for(int k=0; k<Np; k++)
+      {
+        count=charge_c(n,Np,k);
+        begin=count[0];
+        end=count[1];
+        int size(end-begin+1);
+        if(k==0)
+        {
+          //don't do a thing
+          //reconstruct
+          for(int l=0; l<size; l++)
+          {
+            z=+temp;
+          }
+        }else{
+          MPI_Recv(&temp,size,MPI_DOUBLE,k,tag,MPI_COMM_WORLD,&status);
+
+          for(int l=0; l<size; l++)
+          {
+            z+=temp;
+          }
+        }
+
+      }
+    }
+    return z;
+  }
+}
+
+
+double GradConj::MPI_norm(std::vector<double> x)
+{
+	double z=GradConj::MPI_dot_product(x,x);
+	return sqrt(z);
+}
 
 
 

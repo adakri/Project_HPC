@@ -170,9 +170,9 @@ void Problem::Solve_problem(int cas, double tf)
 	{
 		A_=Problem::Construct_Matrix(); //writes twice to change
 		Problem::Construct_F(cas,t,test);
-    Problem::Construct_Bd(cas,t);
-    std::vector<double> S(Nx_*Ny_,0.);
-    S=GradConj::sum(F_,Bd_,1);
+		Problem::Construct_Bd(cas,t);
+		std::vector<double> S(Nx_*Ny_,0.);
+		S=GradConj::sum(F_,Bd_,1);
 		GradConj gc=GradConj(A_,S,Nx_,Ny_);
 		gc.Solve(nb_iter,sol_);
 		t+=deltat_;

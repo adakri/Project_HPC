@@ -2,7 +2,7 @@
 #include <fstream>
 #include <chrono>
 #include <math.h>
-//#include <mpi.h>
+#include <mpi.h>
 
 #include "Problem.h"
 #include "GradConj.h"
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
   //Problem test
   //donées du problème
   double Lx=1.,Ly=1.,D=1.,deltat=1.,tf=10.;
-  int Nx=4,Ny=4,Nt=1;
+  int Nx=2,Ny=3,Nt=4;  //Nt ou delta t à éliminer
 
 
 
@@ -199,7 +199,7 @@ int main(int argc, char** argv)
 
   //implémentation du cas 4 méthode create second term, class output to print and splot
   bloc
-  int cas=5;
+  int cas=6;
   P.Solve_problem(cas,tf); //cas 4
   y=P.get_sol();
   bloc
@@ -209,39 +209,44 @@ int main(int argc, char** argv)
   Output io=Output(&P);
   io.Save_sol("sol.dat");
   io.splot_solution("sol.dat");
-<<<<<<< HEAD
-=======
-
->>>>>>> 7cdf85913b8c395c9cc97eed09482af31a8283d5
 
 
 
   //test of parallel region
-<<<<<<< HEAD
-  bloc
+
+
+  /**********************************************************/
+ 
+ bloc
   //test of sum inside parallel region
   std::vector<double> y1(Nx*Ny,2.);
   std::vector<double> g1(Nx*Ny,4.);
-  // print_vector(y1);
-  // print_vector(g1);
+  print_vector(y1);
+  print_vector(g1);
+
+
+
   MPI_Init(&argc,&argv);
 
 
   y=mc.MPI_sum(y1,g1,-1);
+  //print_vector(y);
   //la somme fonctionne
 
-  //test of sum inside parallel region
-  //test=mc.MPI_dot_product(y1,g1);
+  double temp=mc.MPI_dot_product(y1,g1);
+  bloc
+  cout<<temp<<endl;
+  //prod scal fonctionne
+  bloc
+  temp=mc.MPI_norm(y1);
+  cout<<temp<<endl;
+
+  //reste à paralléliser le produit et organiser la distribution
 
 
-  print_vector(y);
 
-  MPI_Finalize();
-=======
-//  MPI_Init( &argc, &argv );
 
->>>>>>> 7cdf85913b8c395c9cc97eed09482af31a8283d5
-
+  MPI_Finalize(); 
   //print_vector(y);
 
 
