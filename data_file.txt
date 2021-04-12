@@ -1,0 +1,29 @@
+# Data file with tf,dt,Nx,NyLx,Ly,D
+
+# Time parameters
+tf
+10
+dt
+1.5
+
+# Diffusion coefficients
+D
+1.
+
+#cas
+cas 
+4
+
+
+# Results folder, maybe? incorporé dans la classe mais pas implementé
+
+#geometry parameters
+Nx
+30
+Ny
+40
+
+Lx 
+1.
+Ly
+1.
