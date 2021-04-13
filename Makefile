@@ -1,5 +1,6 @@
 # Compilateur utilisé
-CC=g++
+CC=mpicxx
+#g++
 
 # Options en mode optimisé - La variable DEBUG est définie comme fausse
 OPTIM_FLAG = -O3 -DNDEBUG -std=c++11
@@ -13,7 +14,7 @@ CXX_FLAGS = $(DEBUG_FLAG)
 PROG = run
 
 # Les fichiers source à compiler
-SRC = main.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp
+SRC = main.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp Readfile.cpp
 # La commande complète : compile seulement si un fichier a été modifié
 $(PROG) : $(SRC)
 	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
