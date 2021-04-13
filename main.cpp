@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 
   //Problem test
   //donées du problème
-  double Lx=1.,Ly=1.,D=1.,deltat=1.,tf=10.;
+  double Lx=1.,Ly=1.,D=1.,deltat=0.1,tf=10.;
   int Nx=40,Ny=40,Nt=1;
 
 

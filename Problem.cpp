@@ -101,7 +101,7 @@ void Problem::Construct_F(int cas, double t, std::vector<double>& test) //sol_==
 	{
 		for(int j=0; j<Nx_; j++)
 		{
-			F_[i*Nx_+j]=(sol_[i*Nx_+j]+ functions_->Source_term(j*deltax_,i*deltay_,t+deltat_,cas)); //to change
+			F_[i*Nx_+j]=(sol_[i*Nx_+j]+ deltat_*functions_->Source_term(j*deltax_,i*deltay_,t+deltat_,cas)); //to change
 		}
 	}
 	//siz(F_)
@@ -111,7 +111,9 @@ void Problem::Construct_F(int cas, double t, std::vector<double>& test) //sol_==
 void Problem:: Construct_Bd(int cas,double t)
 {
   int n=Nx_*Ny_;
+  std::vector<double> M(n,0.);
   Bd_.resize(n);
+  Bd_=M;
   for(int i=0; i<Ny_; i++)
 	{
 		for(int j=0; j<Nx_; j++)
@@ -166,13 +168,14 @@ void Problem::Solve_problem(int cas, double tf)
 	int nb_iter=100;
 	double t(0.);
 	std::vector<double> test;
+  std::vector<double> S(Nx_*Ny_,0.),S1(Nx_*Ny_,0.);
 	while(t<tf)
 	{
 		A_=Problem::Construct_Matrix(); //writes twice to change
 		Problem::Construct_F(cas,t,test);
     Problem::Construct_Bd(cas,t);
-    std::vector<double> S(Nx_*Ny_,0.);
-    S=GradConj::sum(F_,Bd_,1);
+    S1=GradConj::prod_scal(Bd_,deltat_);
+    S=GradConj::sum(F_,S1,1);
 		GradConj gc=GradConj(A_,S,Nx_,Ny_);
 		gc.Solve(nb_iter,sol_);
 		t+=deltat_;
