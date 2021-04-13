@@ -268,6 +268,9 @@ int main(int argc, char** argv)
   MPI_Init(&argc,&argv);
 
 
+
+
+
   y=mc.MPI_sum(y1,g1,-1);
   //print_vector(y);
   //la somme fonctionne
@@ -289,8 +292,19 @@ int main(int argc, char** argv)
 
 
 
+
+
+
   MPI_Finalize();
   //print_vector(y);
+
+  bloc 
+  bloc 
+
+  Rf->Assembel_sol_file(3);
+
+
+
 
 
 
