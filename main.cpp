@@ -134,7 +134,7 @@ int main(int argc, char** argv)
 
 
   //récuperer le nom
-  const string data_file_name = argv[1];  
+  const string data_file_name = argv[1];
   bloc
   cout<<data_file_name<<endl;
   Readfile* Rf = new Readfile(data_file_name);
@@ -156,13 +156,11 @@ int main(int argc, char** argv)
 
   //Problem test
   //donées du problème
-<<<<<<< HEAD
-  double Lx=1.,Ly=1.,D=1.,deltat=0.1,tf=10.;
-  int Nx=40,Ny=40,Nt=1;
-=======
+
+  //double Lx=1.,Ly=1.,D=1.,deltat=0.1,tf=10.;
+  //int Nx=40,Ny=40,Nt=1;
   double Lx=Rf->Get_Lx(),Ly=Rf->Get_Ly(),D=Rf->Get_D(),deltat=Rf->Get_dt(),tf=Rf->Get_tfinal();
   int Nx=Rf->Get_Nx(),Ny=Rf->Get_Ny(),Nt=4;  //Nt ou delta t à éliminer
->>>>>>> 96eed50053c39837064f13acf3d0cf486c2909c4
 
 
 
@@ -257,7 +255,7 @@ int main(int argc, char** argv)
 
 
   /**********************************************************/
- 
+
  bloc
   //test of sum inside parallel region
   std::vector<double> y1(Nx*Ny,2.);
@@ -291,7 +289,7 @@ int main(int argc, char** argv)
 
 
 
-  MPI_Finalize(); 
+  MPI_Finalize();
   //print_vector(y);
 
 

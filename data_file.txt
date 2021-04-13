@@ -11,8 +11,8 @@ D
 1.
 
 #cas
-cas 
-4
+cas
+6
 
 
 # Results folder, maybe? incorporé dans la classe mais pas implementé
@@ -23,7 +23,7 @@ Nx
 Ny
 40
 
-Lx 
+Lx
 1.
 Ly
 1.
