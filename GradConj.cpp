@@ -78,6 +78,25 @@ std::vector<double> GradConj::product(std::vector<std::vector<double>> A,std::ve
 	}
   return y;
 }
+void  GradConj::product_parallel(std::vector<std::vector<double>> A,std::vector<double> x, std::vector<double> y,int me ,int Np, int Nx, int Ny)
+{
+  
+  int i=me ;
+  bool a,b,c,d;
+  
+  while ( i < Nx*Ny )
+    {
+    a=(i>Nx-1);
+    b=(i<Nx*(Ny-1));
+    c=(i>0);
+    d=(i<Nx*Ny-1);
+    y[i]=A[0][i]*x[i]+d*A[1][i]*x[i+1]+b*A[2][i]*x[i+Nx]+c*A[1][i-1]*x[i-1]+a*A[2][i-Nx]*x[i-Nx];
+    printf("%f " , y[i]- this->product( A,x ,Nx,Ny)[i]);
+    i=i+Np ;
+
+	}
+
+}
 
 std::vector<double> GradConj::sum(std::vector<double> x,std::vector<double> y, int sign) //-1 ou 1
 {

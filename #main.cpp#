@@ -25,7 +25,7 @@ using namespace std;
 void print_vector(std::vector<double> x)
 {
   int n=x.size();
-  cout<<"le vecteur de taille "<<n<<endl;
+  //cout<<"le vecteur de taille "<<n<<endl;
 
   for (int i = 0; i<n; i++)
   {
@@ -39,60 +39,60 @@ void print_vector(std::vector<double> x)
 
 void print_matrix(std::vector<std::vector<double>> A)
 {
-  //cout<<"la diagonale de la matrice:"<<endl;
-  //cout<<"[ ";
+  cout<<"la diagonale de la matrice:"<<endl;
+  cout<<"[ ";
   for(int i=0; i<A[0].size();i++)
   {
-    //cout<<A[0][i]<<" ";
+    cout<<A[0][i]<<" ";
   }
-  //cout<<" ]"<<endl;
-  //cout<<"la sur diagonale de la matrice:"<<endl;
-  //cout<<"[ ";
+  cout<<" ]"<<endl;
+  cout<<"la sur diagonale de la matrice:"<<endl;
+  cout<<"[ ";
   for(int i=0; i<A[1].size();i++)
   {
-    //cout<<A[1][i]<<" ";
+    cout<<A[1][i]<<" ";
   }
-  //cout<<" ]"<<endl;
-  //cout<<"la sur-sur diagonale de la matrice:"<<endl;
-  //cout<<"[ ";
+  cout<<" ]"<<endl;
+  cout<<"la sur-sur diagonale de la matrice:"<<endl;
+  cout<<"[ ";
   for(int i=0; i<A[2].size();i++)
   {
-    //cout<<A[2][i]<<" ";
+    cout<<A[2][i]<<" ";
   }
-  //cout<<" ]"<<endl;
-  //cout<<endl;
+  cout<<" ]"<<endl;
+  cout<<endl;
 
 }
 
 
 void print_matrix_verbose(std::vector<std::vector<double>> A)
 {
-  //cout<<"version verbose de la matrice creuse"<<endl;
+  cout<<"version verbose de la matrice creuse"<<endl;
   std::cout << "-------------------------------------------------" << std::endl;
   if(A.size()!=3)
   {
-    //cout<<"mauvais format de matrice"<<endl;
+    cout<<"mauvais format de matrice"<<endl;
   }else{
     //retrouvant Nx et Ny
     int Ny=A[0].size()/(A[0].size()-A[2].size());
     int Nx=A[0].size()/Ny;
-    //cout<<Nx<<" "<<Ny<<endl;
+    cout<<Nx<<" "<<Ny<<endl;
     for(int i=0; i<Nx*Ny; i++)
     {
       for(int j=0; j<Nx*Ny; j++)
       {
         if(i==j)
         {
-          //cout<<A[0][i]<<" ";
+          cout<<A[0][i]<<" ";
         }else if( (j==i+1) || (j==i-1) ){
-          //cout<<A[1][i]<<" ";
+          cout<<A[1][i]<<" ";
         }else if(j==Nx+i){
-	  // cout<<A[2][i];
+	   cout<<A[2][i];
         }else{
-          //cout<<"0 ";
+          cout<<"0 ";
         }
       }
-      //cout<<endl;
+      cout<<endl;
     }
   }
 }
@@ -163,7 +163,7 @@ int main(int argc, char** argv)
   int Nx=Rf->Get_Nx(),Ny=Rf->Get_Ny(),Nt=4;  //Nt ou delta t à éliminer
 
 
-
+  
 
 
   BC bc=BC(Nx,Ny,Lx,Ly);
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
   //test of matrix construction (**** checkede)
   //print_matrix(B);
 
-
+  
   // operator = is working :(
   std::vector<double> v(4,1.);
   std::vector<double> u(4);
@@ -190,6 +190,7 @@ int main(int argc, char** argv)
   std::vector<double> g(Nx*Ny,4.);
   
   GradConj mc(B,g,Nx,Ny);
+  
   
 // test produit parallel 
   
@@ -228,7 +229,7 @@ int main(int argc, char** argv)
 
   //test Bc functions
   test=bc.Source_term(10,20,25,4);
-  cout<<"test functions "<<test<<endl;
+  //cout<<"test functions "<<test<<endl;
 
 
 
@@ -269,7 +270,7 @@ int main(int argc, char** argv)
 
 
 
-/*   MPI_Init(&argc,&argv);
+  MPI_Init(&argc,&argv);
 
 
   y=mc.MPI_sum(y1,g1,-1);
@@ -278,11 +279,11 @@ int main(int argc, char** argv)
 
   double temp=mc.MPI_dot_product(y1,g1);
   bloc
-  cout<<temp<<endl;
+    //cout<<temp<<endl;
   //prod scal fonctionne
   bloc
   temp=mc.MPI_norm(y1);
-  cout<<temp<<endl;
+  //cout<<temp<<endl;
 
   //reste à paralléliser le produit et organiser la distribution
   //------------------------------------------------------------
@@ -292,44 +293,7 @@ int main(int argc, char** argv)
   MPI_Comm_rank(MPI_COMM_WORLD,&me);
   mc.product_parallel(B,g,y,me, Np,Nx,Ny);
   
-  MPI_Finalize (); */
-  // test produit parallel
-  cout << "-----------------------------------------produit parallel ---------------" << endl ;
-  print_vector(mc.sum(mc.product(B,g,Nx,Ny), y ,-1));
-
-
-
-
-  bloc 
-  bloc 
-  MPI_Init(&argc,&argv);
-
-  int me,Np,tag,input,begin,end;
-  tag=100;
-  std::vector<int> v(2);
-
-  MPI_Comm_size(MPI_COMM_WORLD,&Np);
-  MPI_Comm_rank(MPI_COMM_WORLD,&me);
-
-  v=charge(Nx*Ny,Np,me);
-  std::vector<std::vector>double>> C(3);
-  int size=v[1]-v[0]+1;
-  C[0].resize(size);
-  C[1].resize(size);
-  C[2].resize(size);
-
-  std::vector<double> x(size,0.);
-  
-
-
-
-
-  
-
-
   MPI_Finalize ();
-
-
 
   // Fin du chrono
   auto finish = chrono::high_resolution_clock::now();

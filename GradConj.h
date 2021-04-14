@@ -18,6 +18,8 @@ public:
 	GradConj(std::vector<std::vector<double>> A ,std::vector<double> b, int Nx, int Ny);
 
 	static std::vector<double> product(std::vector<std::vector<double>>,std::vector<double>, int, int) ;
+	
+	void  product_parallel(std::vector<std::vector<double>> A,std::vector<double> x, std::vector<double> y,int me ,int Np, int Nx, int Ny);
 
 	static std::vector<double> prod_scal(std::vector<double> ,double ) ;
 
