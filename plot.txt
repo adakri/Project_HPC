@@ -1,0 +1,35 @@
+#set size square
+#set pm3d map
+#set cntrparam cubicspline
+#set title "test"
+#set format x ""
+#set format y ""
+#set cbrange [0:1]
+#set palette rgbformulae 22,13,10
+#splot "sol.dat" u 1:2:3
+
+reset
+set size square
+set contour
+unset surface
+set cntrparam levels incr -0.3,0.1,0.5
+
+set view map
+
+
+set dgrid3d 100,100,4
+
+unset contour
+set surface
+set table "dgrid.txt"
+splot "sol.dat" u 1:2:3
+unset table
+
+reset
+set pm3d map
+unset key
+set palette defined (0 'blue', 1 'white',2 'red')
+set autoscale fix
+set grid
+
+splot 'dgrid.txt' w pm3d

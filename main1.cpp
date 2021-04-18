@@ -244,42 +244,35 @@ int main(int argc, char** argv)
 
   //me va envoyer ses éléments aux procs qui en a besoin
   MPI_Status Status ;
-  debug
   for (int k=1 ; k< q+2 ; k++)
   {
-    debug
-
-          if ( me+k < Np)
-              {
-                if ( k==q+1)
-                  {
-                    debug
-                    MPI_Send (& x[0], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
-
-                    MPI_Recv (& y[(k-1)*size],r , MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
-                    }
-                else{
-                  debug
-                    MPI_Send (& x[0],size, MPI_DOUBLE , me+k,Np,MPI_COMM_WORLD ) ;
-                    MPI_Recv (& y[(k-1)*size],size, MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
-                }
-
-              }
-          if ( me-k>-1)
-
-          {
-            if ( k==q+1)
+    if ( me+k < Np)
+        {
+          if ( k==q+1)
             {
-
-              MPI_Send (& x[0], r , MPI_DOUBLE , me-k,0,MPI_COMM_WORLD ) ;
-
-              MPI_Recv (& z[(k-1)*size],r , MPI_DOUBLE , me-k , 0 , MPI_COMM_WORLD, & Status );
-
-            }
-
-              MPI_Send (& x[0],size, MPI_DOUBLE , me-k,Np,MPI_COMM_WORLD ) ;
-              MPI_Recv (& z[(k-1)*size],size , MPI_DOUBLE , me-k , 0, MPI_COMM_WORLD, & Status );
+              MPI_Send (& x[0], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
+              MPI_Recv (& y[(k-1)*size],r , MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
+              }
+          else{
+              MPI_Send (& x[0],size, MPI_DOUBLE , me+k,Np,MPI_COMM_WORLD ) ;
+              MPI_Recv (& y[(k-1)*size],size, MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
           }
+        }
+    if ( me-k>-1)
+
+    {
+      if ( k==q+1)
+      {
+
+        MPI_Send (& x[0], r , MPI_DOUBLE , me-k,0,MPI_COMM_WORLD ) ;
+
+        MPI_Recv (& z[(k-1)*size],r , MPI_DOUBLE , me-k , 0 , MPI_COMM_WORLD, & Status );
+
+      }
+
+        MPI_Send (& x[0],size, MPI_DOUBLE , me-k,Np,MPI_COMM_WORLD ) ;
+        MPI_Recv (& z[(k-1)*size],size , MPI_DOUBLE , me-k , 0, MPI_COMM_WORLD, & Status );
+    }
   }
   for (int i=0 ; i < size ; i++ )
     {
