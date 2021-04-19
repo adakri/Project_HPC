@@ -267,7 +267,7 @@ int main(int argc, char** argv)
   //print_vector(y1);
   //print_vector(g1);
 
-
+/* 
 
 /*   MPI_Init(&argc,&argv);
 
@@ -333,7 +333,7 @@ int main(int argc, char** argv)
 
 
 
-  MPI_Finalize();
+  MPI_Finalize(); */
   //print_vector(y);
 
   bloc 
