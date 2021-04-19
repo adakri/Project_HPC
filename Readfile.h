@@ -33,9 +33,9 @@ public:
   Readfile(std::string file_name);
 
 //ones to define
-  std::string clean_line(std::string &s);
-
   void Read_data_file();
+
+  void Assembel_sol_file(int);
 
   
 //header defined

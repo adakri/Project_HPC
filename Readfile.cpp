@@ -148,5 +148,44 @@ void Readfile::Read_data_file()
     
 }
 
+void Readfile::Assembel_sol_file(int Np)
+{
+    ofstream myfile;
+    myfile.open ("global_sol.txt");
+    for(int i=0; i<Np; i++)
+    {
+        //test of opening
+        string file_name="sol00"+std::to_string(i)+".txt";
+        ifstream data_file(file_name.data());
+        if (!data_file.is_open())
+        {
+            cout << "Unable to open file " << file_name << endl;
+            exit(0);
+        }
+        else
+        {
+            cout << "-------------------------------------------------" << endl;
+            cout << "Reading data file " << file_name << endl;
+        }
+        
+        while(!data_file.eof())
+        {
+            string line;
+            getline(data_file, line);
+            if(data_file.eof()==false)
+            {
+                myfile<<line<<"\n";  
+
+            }else{
+                myfile<<line;  
+            }
+        }
+        data_file.close();
+    }
+    myfile.close();
+
+}
+
+
 #define _DATA_FILE_CPP
 #endif
