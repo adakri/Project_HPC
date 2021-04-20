@@ -305,49 +305,17 @@ int main(int argc, char** argv)
 
   bloc 
   bloc 
-  MPI_Init(&argc,&argv);
-
-  int me,Np,tag,input,begin,end;
-  tag=100;
-  std::vector<int> v(2);
-
-  MPI_Comm_size(MPI_COMM_WORLD,&Np);
-  MPI_Comm_rank(MPI_COMM_WORLD,&me);
-
-  v=charge(Nx*Ny,Np,me);
-  std::vector<std::vector>double>> C(3);
-  int size=v[1]-v[0]+1;
-  C[0].resize(size);
-  C[1].resize(size);
-  C[2].resize(size);
-
-  std::vector<double> x(size,0.);
-  
-
-
-
-<<<<<<< HEAD
 
   
-=======
 
 
 
-  MPI_Finalize(); */
-  //print_vector(y);
 
+  
   bloc 
   bloc 
 
   Rf->Assembel_sol_file(3);
-
-
-
-
->>>>>>> f28755e0cc003106ecb3f3a3dc058d5223b65996
-
-
-  MPI_Finalize ();
 
 
 

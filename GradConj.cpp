@@ -348,7 +348,7 @@ double GradConj::MPI_norm(std::vector<double> x)
 void GradConj::Solve(int state,std::vector<double>& u)
 {
 	//cout<<"**********************GC commences**********************"<<endl;
-  	int n = Nx_*Ny_;
+  int n = Nx_*Ny_;
 	k_=state;
 	cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
 	std::vector<std::vector<double>> A(A_);
