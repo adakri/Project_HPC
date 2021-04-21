@@ -272,7 +272,7 @@ int main(int argc, char** argv)
     bool a,b,c,d ;
     q= Nx/size ;
     r=Nx-q*size ;
-    vector < double>  z (Nx), y(Nx) ;
+    vector < double>  z (z1), y(Nx) ;
 
     x=p1;
 
@@ -327,9 +327,6 @@ int main(int argc, char** argv)
         b=(i+Nx<size);
         c=(i>0);
         d=(i+1<size);
-
-        //e=(rang+i)%Nx!=0);
-      // prod[i]=C[0][i]*x[i]+d*C[1][i]*x[i+1]+(1-d)*C[1][i]*x[i+1]+(1-b)*C[2][i]*x[i+Nx]+b*C[2][i]*y[-size+i+Nx]+c*e*betax*x[i-1]+(1-c)*e*betax*z[0]+a*f*betay*x[i-Nx])+(1-a)*f*betay*z[i-Nx+1] ;
 
         prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i-1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
 
@@ -388,8 +385,8 @@ int main(int argc, char** argv)
   {
     for(int j=0; j<Nx; j++)
     {
-      x1=j*dx;
-      y1=i*dy;
+      x1=(j+size)*dx;
+      y1=(i+size)*dy;
       myfile<<x1<<" "<<y1<<" "<<x[j+i*Nx]<<endl;
     }
   }
