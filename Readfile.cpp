@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#define huzzah cout<<"huzzah"<<endl;
+
 Readfile::Readfile(std::string file_name)
 : file_name_(file_name),  if_tfinal_(false), if_dt_(false),if_results_(false), if_D_(false), if_Lx_(false), if_Ly_(false),if_Nx_(false), if_Ny_(false)
 {
@@ -43,6 +45,7 @@ void Readfile::Read_data_file()
         {
         if (file_line.find("tf") != std::string::npos)
         {
+            huzzah
             data_file >> tfinal_; 
             if_tfinal_ = true;
         }
@@ -79,6 +82,12 @@ void Readfile::Read_data_file()
         {
             data_file >> D_;
             if_D_ = true;
+        }
+        if (file_line.find("cas") != std::string::npos)
+        {
+            data_file >> cas_;
+            if_cas_ = true;
+        }
         }
 
     }
@@ -130,11 +139,53 @@ void Readfile::Read_data_file()
         cout << "Ooooops, initialized the value with 0" << endl;
         Ny_ = 0.;
     }
+    if (!if_cas_)
+    {
+        cout << "-------------------------------------------------" << endl;
+        cout << "Ooooops, initialized the value with (4)" << endl;
+        cas_ = 4;
+    }
     
-    
-   
+}
+
+void Readfile::Assembel_sol_file(int Np)
+{
+    ofstream myfile;
+    myfile.open ("global_sol.txt");
+    for(int i=0; i<Np; i++)
+    {
+        //test of opening
+        string file_name="sol00"+std::to_string(i)+".txt";
+        ifstream data_file(file_name.data());
+        if (!data_file.is_open())
+        {
+            cout << "Unable to open file " << file_name << endl;
+            exit(0);
+        }
+        else
+        {
+            cout << "-------------------------------------------------" << endl;
+            cout << "Reading data file " << file_name << endl;
+        }
+        
+        while(!data_file.eof())
+        {
+            string line;
+            getline(data_file, line);
+            if(data_file.eof()==false)
+            {
+                myfile<<line<<"\n";  
+
+            }else{
+                myfile<<line;  
+            }
+        }
+        data_file.close();
+    }
+    myfile.close();
 
 }
+
 
 #define _DATA_FILE_CPP
 #endif

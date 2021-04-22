@@ -9,7 +9,7 @@ class Readfile {
 private:
   std::string file_name_;
   double  tfinal_, dt_,Lx_,Ly_,D_;
-  int Nx_,Ny_;
+  int Nx_,Ny_,cas_;
 
 
 
@@ -24,6 +24,7 @@ private:
   bool if_Ly_;
   bool if_Nx_;
   bool if_Ny_;
+  bool if_cas_;
 
 
 
@@ -32,9 +33,9 @@ public:
   Readfile(std::string file_name);
 
 //ones to define
-  std::string clean_line(std::string &s);
-
   void Read_data_file();
+
+  void Assembel_sol_file(int);
 
   
 //header defined
@@ -47,6 +48,8 @@ public:
   const double Get_Ny() const {return Ny_;};
   const double Get_Lx() const {return Lx_;};
   const double Get_Ly() const {return Ly_;};
+
+  const int Get_cas() const {return cas_;};
   
 
   

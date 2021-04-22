@@ -26,7 +26,7 @@ double BC::Source_term(const double x, const double y, const double t, const int
   }
   else if ( cas ==6 )
   {
-    return exp(-(x-Lx_/2)*(x-Lx_/2))*exp(-(y-Ly_/2)*(x-Ly_/2))*cos( M_PI*t/2);
+    return exp(-(x-Lx_/2)*(x-Lx_/2))*exp(-(y-Ly_/2)*(y-Ly_/2))*cos( M_PI*t/2);
   }else{
     std::cout<<"choix indisponible "<<cas<<std::endl;
   }

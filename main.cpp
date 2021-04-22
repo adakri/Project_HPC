@@ -8,6 +8,7 @@
 #include "GradConj.h"
 #include "BC.h"
 #include "Output.h"
+#include "Readfile.h"
 
 
 using namespace std;
@@ -96,6 +97,26 @@ void print_matrix_verbose(std::vector<std::vector<double>> A)
   }
 }
 
+vector<int> charge (int n ,int Np, int me )
+{
+  int limite  =n - Np*(n/Np) ;
+  vector <int > res (2) ;
+
+ if ( me < limite)
+   {
+  res [0] = me*(n/Np+1);
+  res [1] = res[0]+n/Np;
+   }
+  else
+    {
+      res[0]= limite*(n/Np+1)+(me-limite)*(n/Np) ;
+      res[1]= res[0]+(n/Np)-1;
+    }
+  return res ;
+}
+
+
+
 
 
 int main(int argc, char** argv)
@@ -104,6 +125,21 @@ int main(int argc, char** argv)
 
   // Démarrage du chrono
   auto start = chrono::high_resolution_clock::now();
+
+  if (argc < 2)
+  {
+    cout << "Ooops, forgot to give the data_file name" << endl;
+    exit(0);
+  }
+
+
+  //récuperer le nom
+  const string data_file_name = argv[1];
+  bloc
+  cout<<data_file_name<<endl;
+  Readfile* Rf = new Readfile(data_file_name);
+  Rf->Read_data_file();
+  // ------------------------------------------------------------
 
 
 
@@ -120,8 +156,11 @@ int main(int argc, char** argv)
 
   //Problem test
   //donées du problème
-  double Lx=1.,Ly=1.,D=1.,deltat=1.,tf=10.;
-  int Nx=2,Ny=3,Nt=4;  //Nt ou delta t à éliminer
+
+  //double Lx=1.,Ly=1.,D=1.,deltat=0.1,tf=10.;
+  //int Nx=40,Ny=40,Nt=1;
+  double Lx=Rf->Get_Lx(),Ly=Rf->Get_Ly(),D=Rf->Get_D(),deltat=Rf->Get_dt(),tf=Rf->Get_tfinal();
+  int Nx=Rf->Get_Nx(),Ny=Rf->Get_Ny(),Nt=4;  //Nt ou delta t à éliminer
 
 
 
@@ -216,7 +255,7 @@ int main(int argc, char** argv)
 
 
   /**********************************************************/
- 
+
  bloc
   //test of sum inside parallel region
   std::vector<double> y1(Nx*Ny,2.);
@@ -224,9 +263,12 @@ int main(int argc, char** argv)
   print_vector(y1);
   print_vector(g1);
 
-
+/* 
 
   MPI_Init(&argc,&argv);
+
+
+
 
 
   y=mc.MPI_sum(y1,g1,-1);
@@ -242,12 +284,27 @@ int main(int argc, char** argv)
   cout<<temp<<endl;
 
   //reste à paralléliser le produit et organiser la distribution
+  //------------------------------------------------------------
+  int me,Np,tag,input,begin,end;
+  tag=100;
+  MPI_Comm_size(MPI_COMM_WORLD,&Np);
+  MPI_Comm_rank(MPI_COMM_WORLD,&me);
 
 
 
 
-  MPI_Finalize(); 
+
+
+  MPI_Finalize(); */
   //print_vector(y);
+
+  bloc 
+  bloc 
+
+  Rf->Assembel_sol_file(3);
+
+
+
 
 
 
