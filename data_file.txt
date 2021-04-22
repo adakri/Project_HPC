@@ -2,9 +2,9 @@
 
 # Time parameters
 tf
-10
+1
 dt
-1.5
+0.1
 
 # Diffusion coefficients
 D

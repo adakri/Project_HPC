@@ -6,7 +6,7 @@
 #set format y ""
 #set cbrange [0:1]
 #set palette rgbformulae 22,13,10
-#splot "sol.dat" u 1:2:3
+#splot "solution_from_proc0.txt" u 1:2:3
 
 reset
 set contour
@@ -21,7 +21,9 @@ set dgrid3d 100,100,4
 unset contour
 set surface
 set table "dgrid.txt"
-splot "sol.dat" u 1:2:3
+splot "solution_from_proc0.txt" u 1:2:3
+resplot "solution_from_proc1.txt" u 1:2:3
+
 unset table
 
 reset
