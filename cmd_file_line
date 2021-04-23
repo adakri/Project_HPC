@@ -9,5 +9,5 @@ set zlabel '<--- Sol --->'
 set title 'Solution'
 set grid
 set style data lines
-splot 'solution_from_proc1.txt' using 1:2:3 w p
-replot "solution_from_proc0.txt" using 1:2:3 w p
+splot "solution_from_proc0.txt" using 1:2:3 w p
+replot 'solution_from_proc1.txt' using 1:2:3 w p

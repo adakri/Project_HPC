@@ -186,11 +186,12 @@ int main(int argc, char** argv)
 
 
   int size=v[1]-v[0]+1;
+  printf ("size : %d",size);
 
 
 
   std::vector<std::vector<double> > C(5,vector<double>(size));
-  std::vector<double> x(size,0.), w(size,2.), prod(size,0.),f(size);
+  std::vector<double> x(size,0.), w(size,2.),f(size);
 
 
 
@@ -217,7 +218,9 @@ int main(int argc, char** argv)
 
 
    f[iter]=2*(reste*deltax-pow(reste*deltax,2)+ quotient*deltay-pow(quotient*deltay,2));
-   reste++;
+   //f[iter]=cos(reste*deltax)+sin(quotient*deltay);
+
+   reste+=1;
    if ( reste > Nx-1)
       {
         reste= 0;
@@ -280,8 +283,13 @@ int main(int argc, char** argv)
 	int j ;
 	double beta;
 	int nb_iterat_;
+  MPI_Status Status ;
+  int q , r ;
+  bool a,b,c,d ;
+  q= Nx/size ;
+  r=Nx-q*size ;
 
-  for (int it_t=0;it_t<9 ;it_t++)
+  for (int it_t=0;it_t<1;it_t++)
 
   {
 
@@ -306,11 +314,9 @@ int main(int argc, char** argv)
 
     //####################################### product A p
 
-    int q , r ;
-    bool a,b,c,d ;
-    q= Nx/size ;
-    r=Nx-q*size ;
-    vector < double>  z (Nx,0.), y(Nx,0.) ;
+
+
+    vector < double>  z (Nx,0.), y(Nx,0.), prod(size,0.) ;
 
     x=p1;
     // if (j==0 && it_t==0)
@@ -320,7 +326,7 @@ int main(int argc, char** argv)
     // bloc
     // }
     //me va envoyer ses éléments aux procs qui en a besoin
-    MPI_Status Status ;
+
     for (int k=1 ; k< q+2 ; k++)
     {
       if ( me+k < Np)
@@ -369,10 +375,48 @@ int main(int argc, char** argv)
         b=(i+Nx<size);
         c=(i>0);
         d=(i+1<size);
-
-        prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i-1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
+        // if (z[Nx-i-1]!=0)
+        //   {
+        //   z[Nx-i-1]=0. ;
+        //   }
+        // if ( y[Nx+i-size]!=0)
+        // {
+        //   y[Nx+i-size]=0.;
+        // }
+        prod[i]+=C[2][i]*x[i];
+        if (a)
+        {
+          prod[i]+=C[0][i]*x[i-Nx] ;
+        }
+        else {
+          prod[i]+=C[0][i]*z[Nx-i-1];
+        }
+        if (c)
+        {
+          prod[i]+=C[1][i]*x[i-1] ;
+        }
+        else {
+          prod[i]+=C[1][i]*z[0] ;
+        }
+        if (b)
+        {
+          prod[i]+=C[4][i]*x[i+Nx] ;
+        }
+        else {
+          prod[i]+=C[4][i]*y[Nx+i-size] ;
+        }
+        if (d)
+        {
+          prod[i]+=C[3][i]*x[i+1];
+        }
+        else{
+          prod[i]+=C[3][i]*y[0];
+        }
+        //prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i-1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
 
       }
+      //print_vector(prod);
+
       // if (it_t==0 && j==0 )
       // {
       //
@@ -382,9 +426,18 @@ int main(int argc, char** argv)
       // }
 
       z1=prod ;
-      // bloc
+      // if (me==1)
+      // {
+      //   print_vector(z1);
+      // }
+
+      // if ( j==0)
+      // {
+      //   bloc
       // print_vector(z1);
       // bloc
+      // }
+      //
       if ( nb_iterat_>0)
       {
         x=xSuivant;
@@ -400,19 +453,24 @@ int main(int argc, char** argv)
 
       alphan=pow(beta,2);
       alphad=GradConj::dot_product(z1,p1);
+      //printf("alphad : %f par me %d", alphad,me);
       MPI_Allreduce(&alphad ,& alphad ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
+
       //alpha= (GradConj::dot_product(r1,r1) )  /(GradConj::dot_product(z1,p1));
       alpha1=alphan/alphad ;
+      //printf("alpha1 : %f ",alpha1);
 
       xSuivant=GradConj::sum(x,GradConj::prod_scal(p1,alpha1),1);
       rSuivant=GradConj::sum(r1,GradConj::prod_scal(z1,alpha1),-1);
 
       gamman=GradConj::dot_product(rSuivant,rSuivant);
+
+
       MPI_Allreduce(&gamman ,& gamman ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
 
       //gamma= GradConj::dot_product(rSuivant,rSuivant) /GradConj::dot_product(r1,r1);
       gamma=gamman/alphan ;
-
+      //printf("gamma : %f ",gamma);
       p1=GradConj::sum(rSuivant,GradConj::prod_scal(p1,gamma),1);
       x=xSuivant;
 
@@ -441,13 +499,14 @@ int main(int argc, char** argv)
 
 
   }
+
   // printf("je suis %d je sui à liter %f",me, it_t);
-  if(me==0)
-    {
+
       bloc
-      printf("voila la norme résidu final pour le proc %d  :  %f",me, beta);
+      //printf("voila la norme résidu final pour le proc %d  :  %f",me, beta);
+      // print_vector(b1);
       bloc
-    }
+
 
 }
   // if(me==0)
@@ -469,7 +528,7 @@ int main(int argc, char** argv)
   double x1,y1;
 
   siz(x);
-  printf(" reste0: %d ; reste : %d ",reste0,reste);
+  //printf(" reste0: %d ; reste : %d ",reste0,reste);
   for(int j=quotient0; j<quotient+1; j++)
   {
     if (j>quotient0)
