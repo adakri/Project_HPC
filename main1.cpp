@@ -163,7 +163,7 @@ int main(int argc, char** argv)
   Readfile* Rf = new Readfile(data_file_name);
   Rf->Read_data_file();
   // ------------------------------------------------------------
-  double Lx=Rf->Get_Lx(),Ly=Rf->Get_Ly(),D=Rf->Get_D(),deltat=Rf->Get_dt(),tf=Rf->Get_tfinal();
+  double Lx=Rf->Get_Lx(),Ly=Rf->Get_Ly(),D=Rf->Get_D(),deltat=Rf->Get_dt(),tf=Rf->Get_tfinal(),t(0.);
   int Nx=Rf->Get_Nx(),Ny=Rf->Get_Ny(),Nt=4;  //Nt ou delta t à éliminer
   //initialisation du parallélisme
   int me,Np,tag,input,begin,end;
@@ -206,32 +206,78 @@ int main(int argc, char** argv)
   for (int k=0; k<me;k++)
   {
     rang+= charge(Nx*Ny,Np, k )[1]-charge(Nx*Ny,Np, k )[0]+1;
-    }
- // construction du seond membre
+  }
+
+
+ // construction du second membre en ajoutant le temps faut ajouter Un
  int reste , quotient ,reste0,quotient0 ;
  reste = rang%Nx ;
  quotient = (rang - reste)/Nx ;
  reste0=reste ;
  quotient0=quotient ;
+
+ int cas=Rf->Get_cas();
+ std::cout<<"le cas utilisé est"<<cas<<std::endl;
  for (int iter=0 ; iter<size ; iter++)
  {
-
-
-   f[iter]=2*(reste*deltax-pow(reste*deltax,2)+ quotient*deltay-pow(quotient*deltay,2));
-   //f[iter]=cos(reste*deltax)+sin(quotient*deltay);
-
+   f[iter]=bc.Source_term(reste*deltax,quotient*deltay,t,cas);
    reste+=1;
-   if ( reste > Nx-1)
-      {
-        reste= 0;
-        quotient++;
-      }
-
-
+    if ( reste > Nx-1)
+    {
+      reste= 0;
+      quotient++;
+    }
  }
- bloc
+
+ //construction des conditions de bords
+  for (int iter=0 ; iter<size ; iter++)
+  {
+    int i=reste,j=quotient;
+    if(i==0&&j==0)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==0&&j!=0&&j!=Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==0&&j==Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==Ny-1&&j==0)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==Ny-1&&j==Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==Ny-1&&j!=0&&j!=Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(j==0&&i!=0&&i!=Ny-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
+    }
+    if(j==Nx-1&&i!=0&&i!=Ny-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
+    }
+    if ( reste > Nx-1)
+    {
+      reste= 0;
+      quotient++;
+    }
+  }
+
+
+
+
+ /* bloc
  print_vector( f);
- bloc
+ bloc */
   //construction de la matrice fonctionne
   for (int i=0;i<size ; i++)
   {
@@ -396,10 +442,10 @@ int main(int argc, char** argv)
 
       }
     }
-if (me==0 && j==0)
+/* if (me==0 && j==0)
 print_vector (y);
 if (me==1 && j==0)
-print_vector(x);
+print_vector(x); */
 
 
 
@@ -536,10 +582,10 @@ print_vector(x);
 
   // printf("je suis %d je sui à liter %f",me, it_t);
 
-      bloc
+      //bloc
       //printf("voila la norme résidu final pour le proc %d  :  %f",me, beta);
       // print_vector(b1);
-      bloc
+      //bloc
 
 
 }
@@ -551,7 +597,7 @@ print_vector(x);
   //   }
   Output io=Output(&P);
 
-  debug(1000)
+  //debug(1000)
 
 
   //io.Save_sol("solution_from_proc.txt");
@@ -561,7 +607,7 @@ print_vector(x);
   myfile.open(st);
   double x1,y1;
 
-  siz(x);
+  //siz(x);
   //printf(" reste0: %d ; reste : %d ",reste0,reste);
   for(int j=quotient0; j<quotient+1; j++)
   {
