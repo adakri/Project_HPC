@@ -229,7 +229,9 @@ int main(int argc, char** argv)
 
 
  }
-
+ bloc
+ print_vector( f);
+ bloc
   //construction de la matrice fonctionne
   for (int i=0;i<size ; i++)
   {
@@ -316,7 +318,7 @@ int main(int argc, char** argv)
 
 
 
-    vector < double>  z (Nx,0.), y(Nx,0.), prod(size,0.) ;
+    vector < double>  z (Nx,0.), y(Nx,0.), prod(size,0.) , ztool(size), ztool1(r) ;
 
     x=p1;
     // if (j==0 && it_t==0)
@@ -334,7 +336,7 @@ int main(int argc, char** argv)
             if ( k==q+1)
               {
 
-                MPI_Send (& x[0], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
+                MPI_Send (& x[size-r], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
                 MPI_Recv (& y[(k-1)*size],r , MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
                 }
             else{
@@ -354,6 +356,20 @@ int main(int argc, char** argv)
 
           MPI_Recv (& z[(k-1)*size],r , MPI_DOUBLE , me-k , 0 , MPI_COMM_WORLD, & Status );
 
+          for (int itr=0;itr<r ; itr++)
+          {
+            if (r-itr<itr)
+            {
+              z[(k-1)*size+itr]=ztool1[(k-1)*size+r-itr-1];
+            }
+            else{
+
+
+            ztool1[(k-1)*size+itr]=z[(k-1)*size+itr];
+            z[(k-1)*size+itr]=z[(k-1)*size+r-itr-1];
+          }
+          }
+
 
         }
           else{
@@ -362,10 +378,28 @@ int main(int argc, char** argv)
           MPI_Send (& x[0],size, MPI_DOUBLE , me-k,Np,MPI_COMM_WORLD ) ;
 
           MPI_Recv (& z[(k-1)*size],size , MPI_DOUBLE , me-k , 0, MPI_COMM_WORLD, & Status );
+
+          for (int itr=0;itr<size ; itr++)
+          {
+            if (size-itr<itr)
+            {
+              z[(k-1)*size+itr]=ztool[k*size-itr-1];
+            }
+            else{
+
+
+            ztool[(k-1)*size+itr]=z[(k-1)*size+itr];
+            z[(k-1)*size+itr]=z[k*size-itr-1];
+          }
+          }
         }
 
       }
     }
+if (me==0 && j==0)
+print_vector (y);
+if (me==1 && j==0)
+print_vector(x);
 
 
 
@@ -477,13 +511,13 @@ int main(int argc, char** argv)
 
       //cout<<"----------------------------------------"<<endl;
       r1=rSuivant;
-      beta=pow(GradConj::norm(r1),2);
-      // if (me==1)
-      // {
-      //   printf (" premiere valeur de beta  %f ",beta);
-      // }
-      MPI_Allreduce(&beta ,& beta ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
-      beta=sqrt(beta);
+      // beta=pow(GradConj::norm(r1),2);
+      // // if (me==1)
+      // // {
+      // //   printf (" premiere valeur de beta  %f ",beta);
+      // // }
+      // MPI_Allreduce(&beta ,& beta ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
+      beta=sqrt(gamman);
       // if (me==1)
       // {
       //   printf (" deuxieme valeur de beta  %f ",beta);
@@ -521,7 +555,7 @@ int main(int argc, char** argv)
 
 
   //io.Save_sol("solution_from_proc.txt");
-  printf("le proc %d est passé",me);
+  //printf("le proc %d est passé",me);
   ofstream myfile;
   string st="solution_from_proc"+to_string(me)+".txt";
   myfile.open(st);
