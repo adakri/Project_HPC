@@ -25,7 +25,7 @@ void Output::Save_sol(std::string st)
   std::vector<double> sol(Nx*Ny);
   sol=P_->get_sol();
   double x,y,dx=P_->get_dx(),dy=P_->get_dy();
-  if(sol.size()!=Nx*Ny)
+  if(sol.size()>Nx*Ny)  //in seq !=
   {
     cout<<"solution de mauvaise taille "<<sol.size()<<endl;
   }else{

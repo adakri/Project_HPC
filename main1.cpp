@@ -19,7 +19,9 @@ using namespace std;
 
 #define bloc std::cout<<"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"<<std::endl;
 #define SHOW(a) std::cout << #a << std::endl;
-#define debug std::cout<<"debug"<<std::endl;
+#define debug(i) std::cout<<"debug"<<i<<std::endl;
+#define siz(a) std::cout <<a.size()<< std::endl;
+
 
 
 
@@ -145,41 +147,41 @@ vector<int> charge (int n ,int Np, int me )
 
 
 
-
-
-
-
-
-
-
-
-
-
 int main(int argc, char** argv)
 {
+  int i(0);
+
+  
 
   MPI_Init(&argc,&argv);
 
 
 
-
   //initialisation du parallélisme
   int me,Np,tag,input,begin,end;
-  int Nx=3 , Ny=4 ;
-  double betax=-1 , betay=-1 , alpha=5;
+  int Nx=3 , Ny=4, Nt=1 ;
+  double betax=-1 , betay=-1 , alpha=5, Lx=1., Ly=1., deltat=0.1;
   tag=100;
   std::vector<int> v(2);
+
+
+  BC bc=BC(Nx,Ny,Lx,Ly);
+  Problem P=Problem(&bc,Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
+
+
+
   MPI_Comm_size(MPI_COMM_WORLD,&Np);
   MPI_Comm_rank(MPI_COMM_WORLD,&me);
-
+  
   v=charge(Nx*Ny,Np,me);
 
 
   int size=v[1]-v[0]+1;
 
 
+
   std::vector<std::vector<double> > C(5,vector<double>(size));
-  std::vector<double> x(size,0.), w(size,2.), prod(size,0.);
+  std::vector<double> x(size,1.), w(size,2.), prod(size,0.);
 
   //on souhaite faire une somme de deux vecteurs, suffit d'appeler les fonctions somme sur la partition du vecteur selon charge, de meme pour norme et produit scalaire etc
 
@@ -187,7 +189,7 @@ int main(int argc, char** argv)
 
 
 
-  //connaite le rang sur la matrice NxNy x NxNy
+  //connaitre le rang sur la matrice NxNy x NxNy
   int rang=0 ;
   for (int k=0; k<me;k++)
   {
@@ -228,71 +230,175 @@ int main(int argc, char** argv)
       C[2][i]=alpha ;
   }
 
-  bloc
+  //print_matrix(C);
 
-  print_matrix(C);
-
-  bloc
+  //print_vector(x);
 
 
-  int q , r ;
-  bool a,b,c,d ;
-  q= Nx/size ;
-  r=Nx-q*size ;
-  vector < double>  z (Nx), y(Nx) ;
+  //début du grad conj##############################
+  int n = size;
+	int k_=10;
+	cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
+	std::vector<std::vector<double>> A(C);
+	std::vector<double> r1(n),b1(x),p1(n),temp(n);
 
 
-  //me va envoyer ses éléments aux procs qui en a besoin
-  MPI_Status Status ;
-  for (int k=1 ; k< q+2 ; k++)
-  {
-    if ( me+k < Np)
-        {
-          if ( k==q+1)
-            {
-              MPI_Send (& x[0], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
-              MPI_Recv (& y[(k-1)*size],r , MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
-              }
-          else{
-              MPI_Send (& x[0],size, MPI_DOUBLE , me+k,Np,MPI_COMM_WORLD ) ;
-              MPI_Recv (& y[(k-1)*size],size, MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
-          }
-        }
-    if ( me-k>-1)
 
+	r1 = b1 ;
+	p1 = r1  ;	// calcul du residu
+	double alpha1;
+	double gamma;
+	std::vector<double> rSuivant(n);
+	std::vector<double> xSuivant(n);
+	std::vector<double> z1(n);
+	int j = 0;
+	double beta=GradConj::norm(r1);
+	int nb_iterat_=0;
+
+	while (j<=k_)
+	{
+    cout<<"________itération__"<<j<<"____________"<<endl;
+    //z=GradConj::product(A,p,Nx_,Ny_);
+		//print_vector1(z);
+		
+
+
+
+
+  
+    //####################################### product A p
+
+    int q , r ;
+    bool a,b,c,d ;
+    q= Nx/size ;
+    r=Nx-q*size ;
+    vector < double>  z (z1), y(Nx) ;
+
+    x=p1;
+
+
+    //me va envoyer ses éléments aux procs qui en a besoin
+    MPI_Status Status ;
+    for (int k=1 ; k< q+2 ; k++)
     {
-      if ( k==q+1)
+      if ( me+k < Np)
+          {
+            if ( k==q+1)
+              {
+
+                MPI_Send (& x[0], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
+                MPI_Recv (& y[(k-1)*size],r , MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
+                }
+            else{
+
+                MPI_Send (& x[0],size, MPI_DOUBLE , me+k,Np,MPI_COMM_WORLD ) ;
+
+                MPI_Recv (& y[(k-1)*size],size, MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
+            }
+          }
+      if ( me-k>-1)
+
       {
+          if ( k==q+1)
+        {
 
-        MPI_Send (& x[0], r , MPI_DOUBLE , me-k,0,MPI_COMM_WORLD ) ;
+          MPI_Send (& x[0], r , MPI_DOUBLE , me-k,0,MPI_COMM_WORLD ) ;
 
-        MPI_Recv (& z[(k-1)*size],r , MPI_DOUBLE , me-k , 0 , MPI_COMM_WORLD, & Status );
+          MPI_Recv (& z[(k-1)*size],r , MPI_DOUBLE , me-k , 0 , MPI_COMM_WORLD, & Status );
+
+
+        }
+          else{
+
+
+          MPI_Send (& x[0],size, MPI_DOUBLE , me-k,Np,MPI_COMM_WORLD ) ;
+
+          MPI_Recv (& z[(k-1)*size],size , MPI_DOUBLE , me-k , 0, MPI_COMM_WORLD, & Status );
+        }
+
+      }
+    }
+
+
+
+    for (int i=0 ; i < size ; i++ )
+      {
+        a=(i-Nx>-1);
+        b=(i+Nx<size);
+        c=(i>0);
+        d=(i+1<size);
+
+        prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i-1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
 
       }
 
-        MPI_Send (& x[0],size, MPI_DOUBLE , me-k,Np,MPI_COMM_WORLD ) ;
-        MPI_Recv (& z[(k-1)*size],size , MPI_DOUBLE , me-k , 0, MPI_COMM_WORLD, & Status );
+      z1=prod ;
+
+      bloc
+
+      alpha= (GradConj::dot_product(r1,r1) )  /(GradConj::dot_product(z1,p1));
+
+
+      xSuivant=GradConj::sum(x,GradConj::prod_scal(p1,alpha1),1);
+      rSuivant=GradConj::sum(r1,GradConj::prod_scal(z1,alpha1),-1);
+
+
+      gamma= GradConj::dot_product(rSuivant,rSuivant) /GradConj::dot_product(r1,r1);
+
+
+      p1=GradConj::sum(rSuivant,GradConj::prod_scal(p1,gamma),1);
+      x=xSuivant;
+
+
+      //cout<<"----------------------------------------"<<endl;
+      r1=rSuivant;
+      beta=GradConj::norm(r1);
+      nb_iterat_=nb_iterat_ +1;
+      j++;
+      if(beta<pow(10,-10))
+      {
+        break;
+      }
+
+      print_vector(x);
+
+      bloc
+      j++;
+
+  }
+
+  Output io=Output(&P);
+
+  debug(1000)
+
+
+  //io.Save_sol("solution_from_proc.txt");
+
+  ofstream myfile;
+  string st="solution_from_proc"+to_string(me)+".txt";
+  myfile.open(st);
+  double dx=Lx/Nx,dy=Ly/Ny;
+  double x1,y1;
+
+  siz(x);
+  for(int i=0; i<size/Ny; i++)
+  {
+    for(int j=0; j<Nx; j++)
+    {
+      x1=(j+size)*dx;
+      y1=(i+size)*dy;
+      myfile<<x1<<" "<<y1<<" "<<x[j+i*Nx]<<endl;
     }
   }
-  for (int i=0 ; i < size ; i++ )
-    {
-      a=(i-Nx>-1);
-      b=(i+Nx<size);
-      c=(i>0);
-      d=(i+1<size);
-      //e=(rang+i)%Nx!=0);
-    // prod[i]=C[0][i]*x[i]+d*C[1][i]*x[i+1]+(1-d)*C[1][i]*x[i+1]+(1-b)*C[2][i]*x[i+Nx]+b*C[2][i]*y[-size+i+Nx]+c*e*betax*x[i-1]+(1-c)*e*betax*z[0]+a*f*betay*x[i-Nx])+(1-a)*f*betay*z[i-Nx+1] ;
 
-      prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i+1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
+  //send and receie last index
+  myfile.close();
 
-    }
-    x=prod ;
 
-    bloc
+  cout<<"----------------Gradient conjugué------------------------"<<j<<"iterations"<<endl;
+  MPI_Finalize() ;
 
-    print_vector(x);
 
-    bloc
 
 
   return 0 ;

@@ -16,9 +16,13 @@ CXX_FLAGS = $(DEBUG_FLAG)
 PROG = run
 
 # Les fichiers source à compiler
+
+SRC = main1.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp Readfile.cpp
+
 SRC = main.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp Readfile.cpp
 
 SRC1 = main1.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp Readfile.cpp
+
 # La commande complète : compile seulement si un fichier a été modifié
 $(PROG) : $(SRC)
 	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
@@ -26,7 +30,7 @@ $(PROG) : $(SRC)
 all : $(PROG)
 
 seq: $(SRC)
-	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)  
+	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
 # à changer le compilateur pour le seq
 
 par: $(SRC1)
