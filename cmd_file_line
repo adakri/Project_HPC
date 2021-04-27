@@ -2,13 +2,10 @@
 #
 #  gnuplot < cmd_file_line
 #
-reset
 set xlabel '<--- X --->'
 set ylabel '<--- Y --->'
 set zlabel '<--- Sol --->'
 set title 'Solution'
 set grid
 set style data lines
-splot "solution_from_proc0.txt" using 1:2:3 w p
-replot 'solution_from_proc1.txt' using 1:2:3 w p
-replot 'solution_from_proc2.txt' using 1:2:3 w p
+splot 'sol.dat' using 1:2:3 w p 

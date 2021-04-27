@@ -124,7 +124,7 @@ int main(int argc, char** argv)
 
 
   // Démarrage du chrono
-  auto start = chrono::high_resolution_clock::now();
+  chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
 
   if (argc < 2)
   {
@@ -320,11 +320,12 @@ int main(int argc, char** argv)
 
 
   // Fin du chrono
-  auto finish = chrono::high_resolution_clock::now();
-  double t = chrono::duration_cast<chrono::seconds>(finish-start).count();
+  chrono::high_resolution_clock::time_point finish = chrono::high_resolution_clock::now();
+
+  chrono::duration<double> t = chrono::duration_cast<chrono::duration<double>>(finish-start);
   // Affichage du résultat
   std::cout << "-------------------------------------------------" << std::endl;
-  cout << "Cela a pris "<< t << " seconds" << endl;
+  cout << "Cela a pris "<< t.count() << " seconds" << endl;
 
   return 0;
 }
