@@ -151,16 +151,25 @@ int main(int argc, char** argv)
 {
   int i(0);
 
-  
+
 
   MPI_Init(&argc,&argv);
 
 
-
+  //récuperer le nom
+  const string data_file_name = argv[1];
+  bloc
+  cout<<data_file_name<<endl;
+  Readfile* Rf = new Readfile(data_file_name);
+  Rf->Read_data_file();
+  // ------------------------------------------------------------
+  double Lx=Rf->Get_Lx(),Ly=Rf->Get_Ly(),D=Rf->Get_D(),deltat=Rf->Get_dt(),tf=Rf->Get_tfinal(),t(0.);
+  int Nx=Rf->Get_Nx(),Ny=Rf->Get_Ny(),Nt=4;  //Nt ou delta t à éliminer
   //initialisation du parallélisme
   int me,Np,tag,input,begin,end;
-  int Nx=3 , Ny=4, Nt=1 ;
-  double betax=-1 , betay=-1 , alpha=5, Lx=1., Ly=1., deltat=0.1;
+  double deltax=Lx/(Nx+1), deltay=Ly/(Ny+1) ;
+  double betax=-deltat/pow(deltax,2) , betay=-deltat/pow(deltay,2);
+  double alpha=1-2*(betax+betay);
   tag=100;
   std::vector<int> v(2);
 
@@ -172,16 +181,19 @@ int main(int argc, char** argv)
 
   MPI_Comm_size(MPI_COMM_WORLD,&Np);
   MPI_Comm_rank(MPI_COMM_WORLD,&me);
-  
+
   v=charge(Nx*Ny,Np,me);
 
 
   int size=v[1]-v[0]+1;
+  printf ("size : %d",size);
 
 
 
   std::vector<std::vector<double> > C(5,vector<double>(size));
-  std::vector<double> x(size,1.), w(size,2.), prod(size,0.);
+  std::vector<double> x(size,0.), w(size,2.),f(size);
+
+
 
   //on souhaite faire une somme de deux vecteurs, suffit d'appeler les fonctions somme sur la partition du vecteur selon charge, de meme pour norme et produit scalaire etc
 
@@ -197,6 +209,75 @@ int main(int argc, char** argv)
   }
 
 
+ // construction du second membre en ajoutant le temps faut ajouter Un
+ int reste , quotient ,reste0,quotient0 ;
+ reste = rang%Nx ;
+ quotient = (rang - reste)/Nx ;
+ reste0=reste ;
+ quotient0=quotient ;
+
+ int cas=Rf->Get_cas();
+ std::cout<<"le cas utilisé est"<<cas<<std::endl;
+ for (int iter=0 ; iter<size ; iter++)
+ {
+   f[iter]=bc.Source_term(reste*deltax,quotient*deltay,t,cas);
+   reste+=1;
+    if ( reste > Nx-1)
+    {
+      reste= 0;
+      quotient++;
+    }
+ }
+
+ //construction des conditions de bords
+  for (int iter=0 ; iter<size ; iter++)
+  {
+    int i=reste,j=quotient;
+    if(i==0&&j==0)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==0&&j!=0&&j!=Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==0&&j==Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==Ny-1&&j==0)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==Ny-1&&j==Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(i==Ny-1&&j!=0&&j!=Nx-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+    }
+    if(j==0&&i!=0&&i!=Ny-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
+    }
+    if(j==Nx-1&&i!=0&&i!=Ny-1)
+    {
+      f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
+    }
+    if ( reste > Nx-1)
+    {
+      reste= 0;
+      quotient++;
+    }
+  }
+
+
+
+
+ /* bloc
+ print_vector( f);
+ bloc */
   //construction de la matrice fonctionne
   for (int i=0;i<size ; i++)
   {
@@ -237,48 +318,63 @@ int main(int argc, char** argv)
 
   //début du grad conj##############################
   int n = size;
-	int k_=10;
-	cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
+	int k_=Nx*Ny;
+	//cout<<"le nombre d'itérations d'entrée "<<k_<<endl;
 	std::vector<std::vector<double>> A(C);
-	std::vector<double> r1(n),b1(x),p1(n),temp(n);
-
-
-
-	r1 = b1 ;
-	p1 = r1  ;	// calcul du residu
-	double alpha1;
+	std::vector<double> r1(n),b1(n),p1(n),temp(n);
+  double alpha1;
 	double gamma;
+  double alphan, alphad, gamman;
 	std::vector<double> rSuivant(n);
 	std::vector<double> xSuivant(n);
 	std::vector<double> z1(n);
-	int j = 0;
-	double beta=GradConj::norm(r1);
-	int nb_iterat_=0;
+	int j ;
+	double beta;
+	int nb_iterat_;
+  MPI_Status Status ;
+  int q , r ;
+  bool a,b,c,d ;
+  q= Nx/size ;
+  r=Nx-q*size ;
 
-	while (j<=k_)
+  for (int it_t=0;it_t<1;it_t++)
+
+  {
+
+  j=0 ;
+  nb_iterat_=0 ;
+  b1=GradConj::sum(x,GradConj::prod_scal(f,deltat),1);
+	r1 = b1 ;
+	p1 = r1  ;	// calcul du residu
+	beta=pow(GradConj::norm(r1),2);
+  MPI_Allreduce(&beta ,& beta ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
+  beta=sqrt(beta);
+	while (j<k_)
 	{
-    cout<<"________itération__"<<j<<"____________"<<endl;
+    //cout<<"________itération__"<<j<<"____________"<<endl;
     //z=GradConj::product(A,p,Nx_,Ny_);
 		//print_vector1(z);
-		
 
 
 
 
-  
+
+
     //####################################### product A p
 
-    int q , r ;
-    bool a,b,c,d ;
-    q= Nx/size ;
-    r=Nx-q*size ;
-    vector < double>  z (z1), y(Nx) ;
+
+
+    vector < double>  z (Nx,0.), y(Nx,0.), prod(size,0.) , ztool(size), ztool1(r) ;
 
     x=p1;
-
-
+    // if (j==0 && it_t==0)
+    // {
+    // bloc
+    // print_vector(x) ;
+    // bloc
+    // }
     //me va envoyer ses éléments aux procs qui en a besoin
-    MPI_Status Status ;
+
     for (int k=1 ; k< q+2 ; k++)
     {
       if ( me+k < Np)
@@ -286,7 +382,7 @@ int main(int argc, char** argv)
             if ( k==q+1)
               {
 
-                MPI_Send (& x[0], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
+                MPI_Send (& x[size-r], r , MPI_DOUBLE , me+k,0,MPI_COMM_WORLD ) ;
                 MPI_Recv (& y[(k-1)*size],r , MPI_DOUBLE , me+k , 0 , MPI_COMM_WORLD, & Status );
                 }
             else{
@@ -306,6 +402,20 @@ int main(int argc, char** argv)
 
           MPI_Recv (& z[(k-1)*size],r , MPI_DOUBLE , me-k , 0 , MPI_COMM_WORLD, & Status );
 
+          for (int itr=0;itr<r ; itr++)
+          {
+            if (r-itr<itr)
+            {
+              z[(k-1)*size+itr]=ztool1[(k-1)*size+r-itr-1];
+            }
+            else{
+
+
+            ztool1[(k-1)*size+itr]=z[(k-1)*size+itr];
+            z[(k-1)*size+itr]=z[(k-1)*size+r-itr-1];
+          }
+          }
+
 
         }
           else{
@@ -314,10 +424,28 @@ int main(int argc, char** argv)
           MPI_Send (& x[0],size, MPI_DOUBLE , me-k,Np,MPI_COMM_WORLD ) ;
 
           MPI_Recv (& z[(k-1)*size],size , MPI_DOUBLE , me-k , 0, MPI_COMM_WORLD, & Status );
+
+          for (int itr=0;itr<size ; itr++)
+          {
+            if (size-itr<itr)
+            {
+              z[(k-1)*size+itr]=ztool[k*size-itr-1];
+            }
+            else{
+
+
+            ztool[(k-1)*size+itr]=z[(k-1)*size+itr];
+            z[(k-1)*size+itr]=z[k*size-itr-1];
+          }
+          }
         }
 
       }
     }
+/* if (me==0 && j==0)
+print_vector (y);
+if (me==1 && j==0)
+print_vector(x); */
 
 
 
@@ -327,75 +455,185 @@ int main(int argc, char** argv)
         b=(i+Nx<size);
         c=(i>0);
         d=(i+1<size);
-
-        prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i-1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
+        // if (z[Nx-i-1]!=0)
+        //   {
+        //   z[Nx-i-1]=0. ;
+        //   }
+        // if ( y[Nx+i-size]!=0)
+        // {
+        //   y[Nx+i-size]=0.;
+        // }
+        prod[i]+=C[2][i]*x[i];
+        if (a)
+        {
+          prod[i]+=C[0][i]*x[i-Nx] ;
+        }
+        else {
+          prod[i]+=C[0][i]*z[Nx-i-1];
+        }
+        if (c)
+        {
+          prod[i]+=C[1][i]*x[i-1] ;
+        }
+        else {
+          prod[i]+=C[1][i]*z[0] ;
+        }
+        if (b)
+        {
+          prod[i]+=C[4][i]*x[i+Nx] ;
+        }
+        else {
+          prod[i]+=C[4][i]*y[Nx+i-size] ;
+        }
+        if (d)
+        {
+          prod[i]+=C[3][i]*x[i+1];
+        }
+        else{
+          prod[i]+=C[3][i]*y[0];
+        }
+        //prod[i]=C[2][i]*x[i]+a*C[0][i]*x[i-Nx]+(1-a)*C[0][i]*z[Nx-i-1]+c*C[1][i]*x[i-1]+(1-c)*C[1][i]*z[0]+b*C[4][i]*x[i+Nx]+(1-b)*C[4][i]*y[Nx+i-size]+d*C[3][i]*x[i+1]+(1-d)*C[3][i]*y[0] ;
 
       }
+      //print_vector(prod);
+
+      // if (it_t==0 && j==0 )
+      // {
+      //
+      //   bloc
+      //   print_vector(prod);
+      //   bloc
+      // }
 
       z1=prod ;
+      // if (me==1)
+      // {
+      //   print_vector(z1);
+      // }
 
-      bloc
+      // if ( j==0)
+      // {
+      //   bloc
+      // print_vector(z1);
+      // bloc
+      // }
+      //
+      if ( nb_iterat_>0)
+      {
+        x=xSuivant;
+      }
+      else {
+        for (int i = 0; i < size; i++)
+      	{
+      		x[i]=0.;
 
-      alpha= (GradConj::dot_product(r1,r1) )  /(GradConj::dot_product(z1,p1));
+      	}
+      }
 
+
+      alphan=pow(beta,2);
+      alphad=GradConj::dot_product(z1,p1);
+      //printf("alphad : %f par me %d", alphad,me);
+      MPI_Allreduce(&alphad ,& alphad ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
+
+      //alpha= (GradConj::dot_product(r1,r1) )  /(GradConj::dot_product(z1,p1));
+      alpha1=alphan/alphad ;
+      //printf("alpha1 : %f ",alpha1);
 
       xSuivant=GradConj::sum(x,GradConj::prod_scal(p1,alpha1),1);
       rSuivant=GradConj::sum(r1,GradConj::prod_scal(z1,alpha1),-1);
 
+      gamman=GradConj::dot_product(rSuivant,rSuivant);
 
-      gamma= GradConj::dot_product(rSuivant,rSuivant) /GradConj::dot_product(r1,r1);
 
+      MPI_Allreduce(&gamman ,& gamman ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
 
+      //gamma= GradConj::dot_product(rSuivant,rSuivant) /GradConj::dot_product(r1,r1);
+      gamma=gamman/alphan ;
+      //printf("gamma : %f ",gamma);
       p1=GradConj::sum(rSuivant,GradConj::prod_scal(p1,gamma),1);
       x=xSuivant;
 
 
       //cout<<"----------------------------------------"<<endl;
       r1=rSuivant;
-      beta=GradConj::norm(r1);
+      // beta=pow(GradConj::norm(r1),2);
+      // // if (me==1)
+      // // {
+      // //   printf (" premiere valeur de beta  %f ",beta);
+      // // }
+      // MPI_Allreduce(&beta ,& beta ,1, MPI_DOUBLE,MPI_SUM,  MPI_COMM_WORLD );
+      beta=sqrt(gamman);
+      // if (me==1)
+      // {
+      //   printf (" deuxieme valeur de beta  %f ",beta);
+      // }
       nb_iterat_=nb_iterat_ +1;
-      j++;
       if(beta<pow(10,-10))
       {
         break;
       }
 
-      print_vector(x);
-
-      bloc
+      //print_vector(x)
       j++;
+
 
   }
 
+  // printf("je suis %d je sui à liter %f",me, it_t);
+
+      //bloc
+      //printf("voila la norme résidu final pour le proc %d  :  %f",me, beta);
+      // print_vector(b1);
+      //bloc
+
+
+}
+  // if(me==0)
+  //   {
+  //     bloc
+  //     printf("voila la norme résidu final pour le proc %d \n %f",me, beta);
+  //     bloc
+  //   }
   Output io=Output(&P);
 
-  debug(1000)
+  //debug(1000)
 
 
   //io.Save_sol("solution_from_proc.txt");
-
+  //printf("le proc %d est passé",me);
   ofstream myfile;
   string st="solution_from_proc"+to_string(me)+".txt";
   myfile.open(st);
-  double dx=Lx/Nx,dy=Ly/Ny;
   double x1,y1;
 
-  siz(x);
-  for(int i=0; i<size/Ny; i++)
+  //siz(x);
+  //printf(" reste0: %d ; reste : %d ",reste0,reste);
+  for(int j=quotient0; j<quotient+1; j++)
   {
-    for(int j=0; j<Nx; j++)
+    if (j>quotient0)
     {
-      x1=(j+size)*dx;
-      y1=(i+size)*dy;
-      myfile<<x1<<" "<<y1<<" "<<x[j+i*Nx]<<endl;
+      reste0=0;
     }
+  for(int i=reste0; i<Nx; i++)
+  {
+
+      x1=i*deltax;
+      y1=j*deltay;
+      myfile<<x1<<" "<<y1<<" "<<x[i+j*Nx-rang]<<endl;
+      if (j==quotient && i>reste )
+      {
+        break ;
+      }
+    }
+
   }
 
   //send and receie last index
   myfile.close();
 
 
-  cout<<"----------------Gradient conjugué------------------------"<<j<<"iterations"<<endl;
+  // cout<<"----------------Gradient conjugué------------------------"<<j<<"iterations"<<endl;
   MPI_Finalize() ;
 
 

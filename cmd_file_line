@@ -2,11 +2,18 @@
 #
 #  gnuplot < cmd_file_line
 #
+reset
 set xlabel '<--- X --->'
 set ylabel '<--- Y --->'
 set zlabel '<--- Sol --->'
 set title 'Solution'
 set grid
 set style data lines
+<<<<<<< HEAD
 splot 'sol.dat' using 1:2:3 w p ,sin(x)+cos(y)
 
+=======
+splot "solution_from_proc0.txt" using 1:2:3 w p
+replot 'solution_from_proc1.txt' using 1:2:3 w p
+replot 'solution_from_proc2.txt' using 1:2:3 w p
+>>>>>>> 38d1f8d29de054bfbc9a49056b79701460f2db6c

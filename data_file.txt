@@ -2,9 +2,9 @@
 
 # Time parameters
 tf
-10
+1
 dt
-1.5
+0.1
 
 # Diffusion coefficients
 D
@@ -19,9 +19,9 @@ cas
 
 #geometry parameters
 Nx
-30
+10
 Ny
-40
+6
 
 Lx
 1.

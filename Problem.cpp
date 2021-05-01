@@ -168,14 +168,14 @@ void Problem::Solve_problem(int cas, double tf)
 	int nb_iter=100;
 	double t(0.);
 	std::vector<double> test;
-  std::vector<double> S(Nx_*Ny_,0.),S1(Nx_*Ny_,0.);
+ 	std::vector<double> S(Nx_*Ny_,0.),S1(Nx_*Ny_,0.);
 	while(t<tf)
 	{
 		A_=Problem::Construct_Matrix(); //writes twice to change
 		Problem::Construct_F(cas,t,test);
-    Problem::Construct_Bd(cas,t);
-    S1=GradConj::prod_scal(Bd_,deltat_);
-    S=GradConj::sum(F_,S1,1);
+		Problem::Construct_Bd(cas,t);
+		S1=GradConj::prod_scal(Bd_,deltat_);
+		S=GradConj::sum(F_,S1,1);
 		/*Problem::Construct_Bd(cas,t);
 		std::vector<double> S(Nx_*Ny_,0.);
 		S=GradConj::sum(F_,Bd_,1);*/
