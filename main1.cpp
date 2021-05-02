@@ -155,6 +155,9 @@ int main(int argc, char** argv)
 
   MPI_Init(&argc,&argv);
 
+  double t1(0.),t2(0.);
+  t1=MPI_Wtime();
+
 
   //récuperer le nom
   const string data_file_name = argv[1];
@@ -620,7 +623,7 @@ print_vector(x); */
 
       x1=i*deltax;
       y1=j*deltay;
-      myfile<<x1<<" "<<y1<<" "<<x[i+j*Nx-rang]<<endl;
+      myfile<<x1<<" "<<y1<<" "<<f[i+j*Nx-rang]<<endl;
       if (j==quotient && i>reste )
       {
         break ;
@@ -631,6 +634,13 @@ print_vector(x); */
 
   //send and receie last index
   myfile.close();
+
+  t2=MPI_Wtime();
+
+
+  bloc
+
+  cout<<"The thread "<<me<<" computed the solution in "<<t2-t1<<endl;
 
 
   // cout<<"----------------Gradient conjugué------------------------"<<j<<"iterations"<<endl;

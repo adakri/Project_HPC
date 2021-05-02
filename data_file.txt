@@ -12,16 +12,16 @@ D
 
 #cas
 cas
-6
+5
 
 
 # Results folder, maybe? incorporé dans la classe mais pas implementé
 
 #geometry parameters
 Nx
-10
+30
 Ny
-6
+60
 
 Lx
 1.
