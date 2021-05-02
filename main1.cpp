@@ -194,7 +194,7 @@ int main(int argc, char** argv)
 
 
   std::vector<std::vector<double> > C(5,vector<double>(size));
-  std::vector<double> x(size,0.), w(size,2.),f(size);
+  std::vector<double> x(size,0.), w(size,2.),f(size,0.);
 
 
 
@@ -221,9 +221,14 @@ int main(int argc, char** argv)
 
  int cas=Rf->Get_cas();
  std::cout<<"le cas utilisé est"<<cas<<std::endl;
+
+
  for (int iter=0 ; iter<size ; iter++)
  {
    f[iter]=bc.Source_term(reste*deltax,quotient*deltay,t,cas);
+
+   //std::cout<<f[iter]<<std::endl;
+
    reste+=1;
     if ( reste > Nx-1)
     {
@@ -231,11 +236,13 @@ int main(int argc, char** argv)
       quotient++;
     }
  }
+ //the boundary conditions are the problem
 
  //construction des conditions de bords
   for (int iter=0 ; iter<size ; iter++)
   {
-    int i=reste,j=quotient;
+    int i=rang%Nx,j=(rang - i)/Nx;
+
     if(i==0&&j==0)
     {
       f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
@@ -268,10 +275,12 @@ int main(int argc, char** argv)
     {
       f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
     }
-    if ( reste > Nx-1)
+
+
+    if ( i > Nx-1)
     {
-      reste= 0;
-      quotient++;
+      i= 0;
+      j++;
     }
   }
 
@@ -623,7 +632,11 @@ print_vector(x); */
 
       x1=i*deltax;
       y1=j*deltay;
-      myfile<<x1<<" "<<y1<<" "<<f[i+j*Nx-rang]<<endl;
+      //bool a=(f[i+j*Nx-rang]<3500);
+      myfile<<x1<<" "<<y1<<" "<<x[i+j*Nx-rang]<<endl;
+
+      //std::cout<<x[i+j*Nx-rang]<<std::endl;
+
       if (j==quotient && i>reste )
       {
         break ;
