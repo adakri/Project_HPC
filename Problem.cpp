@@ -153,6 +153,54 @@ void Problem:: Construct_Bd(int cas,double t)
 		}
 	}
 }
+std::vector<double> Problem:: Constructe_Bd(int cas,double t)
+{
+  int n=Nx_*Ny_;
+  std::vector<double> M(n,0.);
+  Bd_.resize(n);
+  Bd_=M;
+  for(int i=0; i<Ny_; i++)
+	{
+		for(int j=0; j<Nx_; j++)
+		{
+			if(i==0&&j==0)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==0&&j!=0&&j!=Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==0&&j==Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==Ny_-1&&j==0)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==Ny_-1&&j==Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_)+D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(i==Ny_-1&&j!=0&&j!=Nx_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function1(j*deltax_,i*deltay_,t, cas)/(deltay_*deltay_);
+      }
+      if(j==0&&i!=0&&i!=Ny_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_);
+      }
+      if(j==Nx_-1&&i!=0&&i!=Ny_-1)
+      {
+        Bd_[i*Nx_+j]=D_*functions_->Dirichlet_Function0(j*deltax_,i*deltay_,t, cas)/(deltax_*deltax_);
+      }
+		}
+	}
+	std::vector<double> Z(n,0.);
+	Z=Bd_;
+	return Z;
+}
 void Problem::Solve_problem(int cas, double tf)
 {
 	//initialise u_ par fonction initial etc

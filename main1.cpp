@@ -178,7 +178,7 @@ int main(int argc, char** argv)
 
 
   BC bc=BC(Nx,Ny,Lx,Ly);
-  Problem P=Problem(&bc,Nx ,  Ny,  Nt,  Lx,  Ly, deltat);
+  Problem P=Problem(&bc,Nx,Ny,Nt,Lx,Ly,deltat);
 
 
 
@@ -194,7 +194,7 @@ int main(int argc, char** argv)
 
 
   std::vector<std::vector<double> > C(5,vector<double>(size));
-  std::vector<double> x(size,0.), w(size,2.),f(size);
+  std::vector<double> x(size,0.), w(size,2.),f(size,0.),h(size,0.);
 
 
 
@@ -221,9 +221,14 @@ int main(int argc, char** argv)
 
  int cas=Rf->Get_cas();
  std::cout<<"le cas utilisé est"<<cas<<std::endl;
+
+
  for (int iter=0 ; iter<size ; iter++)
  {
    f[iter]=bc.Source_term(reste*deltax,quotient*deltay,t,cas);
+
+   //std::cout<<f[iter]<<std::endl;
+
    reste+=1;
     if ( reste > Nx-1)
     {
@@ -231,11 +236,13 @@ int main(int argc, char** argv)
       quotient++;
     }
  }
+ //the boundary conditions are the problem
 
  //construction des conditions de bords
-  for (int iter=0 ; iter<size ; iter++)
+ /* for (int iter=0 ; iter<size ; iter++)
   {
-    int i=reste,j=quotient;
+    int i=rang%Nx,j=(rang - i)/Nx;
+
     if(i==0&&j==0)
     {
       f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
@@ -268,12 +275,70 @@ int main(int argc, char** argv)
     {
       f[iter]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
     }
-    if ( reste > Nx-1)
+
+
+    if ( i > Nx-1)
     {
-      reste= 0;
-      quotient++;
+      i= 0;
+      j++;
     }
-  }
+  }*/
+
+  //Une autre construction des conditions au bords:
+  int rangp=rang+size;
+  int rs1 = rang%Nx ;
+  int q1= (rang - rs1)/Nx ;
+  int rs2 = rangp%Nx ;
+  int q2= (rangp - rs2)/Nx ;
+  int box=q2-q1;
+  cout<<"this is box "<<box<<endl;
+  cout<<"this is rangp "<<rang<<endl;
+  cout<<"this is rangp "<<rangp<<endl;
+  cout<<"this is q1 and q2 "<<q1<<" "<<q2<<endl;
+  cout<<"this is rs1 and rs2 "<<rs1<<" "<<rs2<<endl;
+  int j;
+  for(int i=q1; i<=q2; i++)
+	{
+		for(int j=0; j<Nx; j++)
+		{
+      if(i==q1&&j>=rs1||i==q2&&j<=rs2||i!=q1&&i!=q2)
+      {
+        if(i==0&&j==0)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+        }
+        if(i==0&&j!=0&&j!=Nx-1)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+        }
+        if(i==0&&j==Nx-1)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+        }
+        if(i==Ny-1&&j==0)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+        }
+        if(i==Ny-1&&j==Nx-1)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax)+D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+        }
+        if(i==Ny-1&&j!=0&&j!=Nx-1)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function1(j*deltax,i*deltay,t, cas)/(deltay*deltay);
+        }
+        if(j==0&&i!=0&&i!=Ny-1)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
+        }
+        if(j==Nx-1&&i!=0&&i!=Ny-1)
+        {
+          f[i*Nx+j-rang]+=D*bc.Dirichlet_Function0(j*deltax,i*deltay,t, cas)/(deltax*deltax);
+        }
+		  }
+    }
+	}
+
 
 
 
@@ -331,7 +396,7 @@ int main(int argc, char** argv)
 	std::vector<double> rSuivant(n);
 	std::vector<double> xSuivant(n);
 	std::vector<double> z1(n);
-	int j ;
+	
 	double beta;
 	int nb_iterat_;
   MPI_Status Status ;
@@ -355,7 +420,7 @@ int main(int argc, char** argv)
 	while (j<k_)
 	{
     //cout<<"________itération__"<<j<<"____________"<<endl;
-    //z=GradConj::product(A,p,Nx_,Ny_);
+    //z=GradConj::product(A,p,Nx,Ny);
 		//print_vector1(z);
 
 
@@ -623,7 +688,11 @@ print_vector(x); */
 
       x1=i*deltax;
       y1=j*deltay;
-      myfile<<x1<<" "<<y1<<" "<<f[i+j*Nx-rang]<<endl;
+      //bool a=(f[i+j*Nx-rang]<3500);
+      myfile<<x1<<" "<<y1<<" "<<x[i+j*Nx-rang]<<endl;
+
+      //std::cout<<x[i+j*Nx-rang]<<std::endl;
+
       if (j==quotient && i>reste )
       {
         break ;

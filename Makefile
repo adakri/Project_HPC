@@ -24,8 +24,8 @@ SRC = main.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp Readfile.cpp
 SRC1 = main1.cpp GradConj.cpp Problem.cpp BC.cpp Output.cpp Readfile.cpp
 
 # La commande complète : compile seulement si un fichier a été modifié
-$(PROG) : $(SRC)
-	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
+$(PROG) : $(SRC1)
+	$(CC) $(SRC1) $(CXX_FLAGS) -o $(PROG)
 # Évite de devoir connaitre le nom de l'exécutable
 all : $(PROG)
 

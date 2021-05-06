@@ -34,6 +34,7 @@ public:
     std::vector<std::vector<double>> Construct_Matrix();
     void Construct_F(int,double, std::vector<double>&);
     void Construct_Bd(int,double);
+    std::vector<double> Constructe_Bd(int,double);
     void Solve_problem(int cas, double tf);
     std::vector<double> get_sol();
     double get_Lx() const {return Lx_;} ;
