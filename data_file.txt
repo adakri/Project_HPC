@@ -2,7 +2,7 @@
 
 # Time parameters
 tf
-1
+9.28
 dt
 0.1
 

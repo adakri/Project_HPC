@@ -21,15 +21,14 @@ set dgrid3d 100,100,4
 unset contour
 set surface
 set table "dgrid.txt"
-splot "solution_from_proc0.txt" u 1:2:3
-resplot "solution_from_proc1.txt" u 1:2:3
+splot "sol.dat" u 1:2:3
 
 unset table
 
 reset
 set pm3d map
 unset key
-set palette defined (0 'blue', 1 'white',2 'red')
+set palette defined (0 'blue', 1 'purple', 2 'red', 3 'brown')
 set autoscale fix
 set grid
 
