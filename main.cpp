@@ -242,7 +242,7 @@ int main(int argc, char** argv)
 
   //implémentation du cas 4 méthode create second term, class output to print and splot
   bloc
-  int cas=5;
+  int cas=Rf->Get_cas();
   P.Solve_problem(cas,tf); //cas 4
   y=P.get_sol();
   bloc

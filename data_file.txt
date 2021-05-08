@@ -2,7 +2,7 @@
 
 # Time parameters
 tf
-9.28
+1
 dt
 0.1
 
@@ -12,7 +12,7 @@ D
 
 #cas
 cas
-5
+6
 
 
 # Results folder, maybe? incorporé dans la classe mais pas implementé
@@ -21,7 +21,7 @@ cas
 Nx
 30
 Ny
-60
+30
 
 Lx
 1.

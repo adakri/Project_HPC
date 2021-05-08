@@ -21,7 +21,7 @@ set dgrid3d 100,100,4
 unset contour
 set surface
 set table "dgrid.txt"
-splot "sol.dat" u 1:2:3
+splot "solution_from_proc0.txt" u 1:2:3 lt rgb "green" , "solution_from_proc1.txt" u 1:2:3 lt rgb "yellow" , "solution_from_proc2.txt" u 1:2:3 lt rgb "black" 
 
 unset table
 
