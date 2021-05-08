@@ -19,9 +19,9 @@ cas
 
 #geometry parameters
 Nx
-30
+300
 Ny
-30
+200
 
 Lx
 1.
