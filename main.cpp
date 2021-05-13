@@ -2,7 +2,6 @@
 #include <fstream>
 #include <chrono>
 #include <math.h>
-#include <mpi.h>
 
 #include "Problem.h"
 #include "GradConj.h"

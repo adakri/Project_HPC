@@ -2,10 +2,12 @@
 #
 #  gnuplot < cmd_file_line
 #
+set zrange [0:1]
 set xlabel '<--- X --->'
 set ylabel '<--- Y --->'
 set zlabel '<--- Sol --->'
-set title 'Solution'
+set title 'solution numerique parallele et analytique'
 set grid
-set style data lines
-splot 'sol.dat' using 1:2:3 w p 
+#splot 'sol.dat' using 1:2:3 w p 
+splot for[i=0:5] "solution_from_proc".i.".txt" title "solution du proc".i." "
+

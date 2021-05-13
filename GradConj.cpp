@@ -5,7 +5,6 @@
 #include <iostream>
 #include <math.h>
 #include <iostream>
-#include <mpi.h>
 
 
 
@@ -116,7 +115,7 @@ std::vector<double> GradConj::sum(std::vector<double> x,std::vector<double> y, i
 }
 
 
-std::vector<double> GradConj::MPI_sum(std::vector<double> x ,std::vector<double> y, int sign)
+/* std::vector<double> GradConj::MPI_sum(std::vector<double> x ,std::vector<double> y, int sign)
 {
   int n=x.size();
 	int m=y.size();
@@ -206,7 +205,7 @@ std::vector<double> GradConj::MPI_sum(std::vector<double> x ,std::vector<double>
     }
     return z;
   }
-}
+} */
 
 std::vector<double> GradConj::prod_scal(std::vector<double> x,double y)
 {
@@ -247,7 +246,7 @@ double GradConj::dot_product(std::vector<double> x,std::vector<double> y)
 };
 
 
-double GradConj::MPI_dot_product(std::vector<double> x ,std::vector<double> y)
+/* double GradConj::MPI_dot_product(std::vector<double> x ,std::vector<double> y)
 {
   int n=x.size();
 	int m=y.size();
@@ -333,14 +332,14 @@ double GradConj::MPI_dot_product(std::vector<double> x ,std::vector<double> y)
     }
     return z;
   }
-}
+} */
 
 
-double GradConj::MPI_norm(std::vector<double> x)
+/* double GradConj::MPI_norm(std::vector<double> x)
 {
 	double z=GradConj::MPI_dot_product(x,x);
 	return sqrt(z);
-}
+} */
 
 
 

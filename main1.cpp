@@ -406,7 +406,7 @@ int main(int argc, char** argv)
     q= Nx/size ;
     r=Nx-q*size ;
 
-    for (int it_t=0;it_t<1;it_t++)
+    for (double it_t=0;it_t<tf+1;it_t++)
 
     {
 
@@ -638,7 +638,7 @@ int main(int argc, char** argv)
         //   printf (" deuxieme valeur de beta  %f ",beta);
         // }
         nb_iterat_=nb_iterat_ +1;
-        if(beta<pow(10,-10))
+        if(beta<pow(10,-4))
         {
           break;
         }
