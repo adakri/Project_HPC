@@ -9,7 +9,6 @@
 
 using namespace std;
 
-#define huzzah cout<<"huzzah"<<endl;
 
 Readfile::Readfile(std::string file_name)
 : file_name_(file_name),  if_tfinal_(false), if_dt_(false),if_results_(false), if_D_(false), if_Lx_(false), if_Ly_(false),if_Nx_(false), if_Ny_(false)
@@ -45,7 +44,6 @@ void Readfile::Read_data_file()
         {
         if (file_line.find("tf") != std::string::npos)
         {
-            huzzah
             data_file >> tfinal_; 
             if_tfinal_ = true;
         }

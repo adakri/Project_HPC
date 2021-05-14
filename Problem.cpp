@@ -204,7 +204,7 @@ void Problem::Solve_problem(int cas, double tf)
 	}
 
 	//solve Au_=f with gradconj::solve after initialsie 
-	int nb_iter = 100;
+	int nb_iter = 10000;
 	double t(0.);
 	std::vector<double> test;
 	std::vector<double> S(Nx_ * Ny_, 0.), S1(Nx_ * Ny_, 0.);

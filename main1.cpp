@@ -491,7 +491,7 @@ int main(int argc, char **argv)
       beta = sqrt(gamman);
 
       nb_iterat_ = nb_iterat_ + 1;
-      if (beta < pow(10, -4))
+      if (beta < pow(10, -10))
       {
         break;
       }
@@ -520,7 +520,7 @@ int main(int argc, char **argv)
       x1 = i * deltax;
       y1 = j * deltay;
       bool a = (f[i + j * Nx - rang] > -1);
-      myfile << x1 << " " << y1 << " " << a * x[i + j * Nx - rang] - sin(x1)+cos(y1)<< endl;
+      myfile << x1 << " " << y1 << " " << a * x[i + j * Nx - rang] << endl;
       if (j == quotient && i > reste)
       {
         break;
