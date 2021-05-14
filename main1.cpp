@@ -520,7 +520,7 @@ int main(int argc, char **argv)
       x1 = i * deltax;
       y1 = j * deltay;
       bool a = (f[i + j * Nx - rang] > -1);
-      myfile << x1 << " " << y1 << " " << a * x[i + j * Nx - rang] << endl;
+      myfile << x1 << " " << y1 << " " << a * x[i + j * Nx - rang] - sin(x1)+cos(y1)<< endl;
       if (j == quotient && i > reste)
       {
         break;
