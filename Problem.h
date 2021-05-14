@@ -36,6 +36,7 @@ public:
     void Construct_Bd(int,double);
     std::vector<double> Constructe_Bd(int,double);
     void Solve_problem(int cas, double tf);
+    //get solution and parameters
     std::vector<double> get_sol();
     double get_Lx() const {return Lx_;} ;
     double get_Ly() const {return Ly_;} ;
@@ -43,7 +44,6 @@ public:
     double get_Ny() const {return Ny_;} ;
     double get_dx() const {return deltax_;} ;
     double get_dy() const {return deltay_;} ;
-    //get solution
 
 };
 

@@ -1,12 +1,6 @@
-#set size square
-#set pm3d map
-#set cntrparam cubicspline
-#set title "test"
-#set format x ""
-#set format y ""
-#set cbrange [0:1]
-#set palette rgbformulae 22,13,10
-#splot "solution_from_proc0.txt" u 1:2:3
+#To plot heatmap, to verify what was given in moodle
+#Warning, change the number of procs, or at least let it be set at a big number so as to not to confuse you with a chopped up solution. I set it to 40. However a big error message is going to be displayed bu gnuplot. My version of gnuplot on ubuntu 20.04 is permissive to this kind of things so it worked like a charm.
+#colours used in moodle are red blue, we used brown, red, purple and blue respectively.
 
 reset
 set contour
@@ -21,8 +15,7 @@ set dgrid3d 100,100,4
 unset contour
 set surface
 set table "dgrid.txt"
-splot "solution_from_proc0.txt" u 1:2:3 lt rgb "green" , "solution_from_proc1.txt" u 1:2:3 lt rgb "yellow" , "solution_from_proc2.txt" u 1:2:3 lt rgb "black" 
-
+splot for [i=0:3] "solution_from_proc".i.".txt" 
 unset table
 
 reset

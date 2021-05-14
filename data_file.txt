@@ -1,10 +1,10 @@
-# Data file with tf,dt,Nx,NyLx,Ly,D
+# Data file with tf,dt,Nx,NyLx,Ly,D and case
 
 # Time parameters
 tf
-5
+2
 dt
-0.3
+0.5
 
 # Diffusion coefficients
 D
@@ -15,13 +15,11 @@ cas
 6
 
 
-# Results folder, maybe? incorporé dans la classe mais pas implementé
-
 #geometry parameters
 Nx
-350
+80
 Ny
-150
+40
 
 Lx
 1.

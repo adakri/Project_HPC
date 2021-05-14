@@ -1,13 +1,13 @@
 # cmd_file_line
 #
-#  gnuplot < cmd_file_line
-#
-set zrange [0:1]
+#Construction du fichier ouvrable dans gnuplot pour la représentation du graphe de la solution séquentielle
 set xlabel '<--- X --->'
 set ylabel '<--- Y --->'
 set zlabel '<--- Sol --->'
-set title 'solution numerique parallele et analytique'
+set title 'Solution'
 set grid
-#splot 'sol.dat' using 1:2:3 w p 
-splot for[i=0:5] "solution_from_proc".i.".txt" title "solution du proc".i." "
 
+
+# switch between one or the other for seq or par versions
+#splot 'sol.dat' using 1:2:3 w p 
+splot for [i=0:3] "solution_from_proc".i.".txt"
